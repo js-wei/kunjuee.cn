@@ -9,7 +9,9 @@ class BaseController extends Controller {
 		set_time_limit(0);
         //加载网站配置
         $this->site =  $this->get_site_config();
-        $this->nav_list = $nav_list = $this->get_nav_list();
+        if(IS_GET){
+            $this->nav_list = $nav_list = $this->get_nav_list();
+        }
 		//获取推荐的案子
 		$this->case = $case = $this->get_case_com();
 	}
@@ -45,9 +47,8 @@ class BaseController extends Controller {
      * @return \Service\Array
      */
     protected function get_nav_list(){
-      
-		$column = M('column')->field('id,fid,title,name,type,uri,last,tpl')->where('status=0')->order('sort asc')->select();
-		session('column_list',$column);
+        $column = M('column')->field('id,fid,title,name,type,uri,last,tpl')->where('status=0')->order('sort asc')->select();
+        session('column_list',$column);
         $column_child=array();
         if(I('get.id')!='') {
             $column1 = M('column')->field('id,fid,title,type,uri,name,last,tpl')->where(['status' => 0, 'name' => I('get.id')])->order('sort asc')->find();
@@ -122,6 +123,8 @@ class BaseController extends Controller {
             }
             $this->assign('navbar', $column_child);
         }
+        
+		
         $this-> location = $location = $this->get_location($column);
         return Category::unlimitedForLevel($column);
     }

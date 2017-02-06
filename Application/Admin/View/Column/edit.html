@@ -117,9 +117,14 @@
                                             <input type="radio" name="type" class="reset-radio"  value="5" <eq name="column.type" value="5">checked</eq>>表单
                                         </label>
                                         <label class="radio-inline inline-width">
+                                            <input type="radio" name="type" class="reset-radio"  value="7">图集
+                                        </label>
+                                        <label class="radio-inline inline-width">
                                             <input type="radio" name="type" class="reset-radio"  value="6" <eq name="column.type" value="6">checked</eq>>跳转页
                                         </label>
-                                        <label for="uri" class="<neq name='column.type' value='6'>hide</neq> data-redirect"><input type="text" placeholder="跳转页地址(eg:http://baidu.com)" value="{$column.uri}" id="uri" class="span5" name="uri"/></label>
+                                        <label for="uri" class="<neq name='column.type' value='6'>hide</neq> data-redirect">
+                                        	<input type="text" placeholder="跳转页地址(eg:http://baidu.com)" value="{$column.uri}" id="uri" class="span5" name="uri"/>
+                                        </label>
                                     </div>
                                 </div>
                                 <div class="control-group">

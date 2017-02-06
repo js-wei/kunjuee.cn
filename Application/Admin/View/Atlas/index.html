@@ -1,4 +1,8 @@
 <include file="Common:header"/>
+<!-- BEGIN PAGE LEVEL STYLES -->
+<link rel="stylesheet" href="__METRONIC_CSS__/DT_bootstrap.css" />
+<link href="__METRONIC_CSS__/jquery.fancybox.css" rel="stylesheet" />
+<!-- END PAGE LEVEL STYLES -->
 <!-- BEGIN CONTAINER -->
 <div class="page-container">
     <!-- BEGIN SIDEBAR -->
@@ -55,7 +59,9 @@
             <div class="row-fluid">
                 <div class="span12">
                     <div class="span5">
-                        <a href="javascript:void(0);" class="btn red" id="btn-delete" data-role="delete" data-paramter="{$column.name}">删除</a>
+                        <a href="javascript:void(0);" class="btn green" id="btn-enable" data-role="enable">启用</a>
+                        <a href="javascript:void(0);" class="btn yellow" id="btn-forbidden" data-role="forbidden">禁用</a>
+                        <a href="javascript:void(0);" class="btn red" id="btn-delete" data-role="delete">删除</a>
                     </div>
                 </div>
             </div>
@@ -64,9 +70,12 @@
             <div class="row-fluid">
                 <div class="span12">
                     <div class="btn-group">
-                        <a href="__URL__/index?id={$Think.get.id}" class="btn red">返回模型<i class="icon-repeat"></i></a>
-                        <a href="__URL__/see?id={$Think.get.id}" class="btn blue">查看留言<i class="icon-eye-open"></i></a>
-                    </div>
+                        <a id="sample_editable_1_new" class="btn green" <notempty name="Think.get.p">href="__URL__/add?id={$Think.get.id}&p={$Think.get.p}"<else/> href="__URL__/add?id={$Think.get.id}&p=1"</notempty>>
+                        添加<i class="icon-plus"></i>
+                        </a>
+                        
+                    </div> 
+                    <!--  <button class="btn tooltips" data-placement="right" data-original-title="Tooltip in right">Right</button> -->
                 </div>
             </div>
             <div class="clear"></div>
@@ -78,20 +87,17 @@
                     <table class="table table-striped table-bordered table-hover dataTable" id="sample_2" aria-describedby="sample_1_info">
                         <thead>
                         <tr role="row" id="dis-sort-simple">
-                            <th style="width:24px;" class="sorting_disabled" role="columnheader" rowspan="1" colspan="1" aria-label="">
+                            <th style="width:22px;" class="sorting_disabled" role="columnheader" rowspan="1" colspan="1" aria-label="">
                                 <div class="checker">
                                     <span><input type="checkbox" class="group-checkable" data-set="#sample_1 .checkboxes"></span>
                                 </div>
                             </th>
                             <th class="hidden-480 sorting" style="width:35px;">编号</th>
-                            <volist name="article" id="art">
-                                <eq name="$key" value="0">
-                                    <th class="sorting_disabled span2"  tabindex="0" aria-controls="sample_1" rowspan="1" colspan="1">{$art.title}</th>
-                                    <else />
-                                    <th class="hidden-480 span2">{$art.title}</th>
-                                </eq>
-                            </volist>
-                            <th class="hidden-480" >提交时间</th>
+                            <th class="sorting_disabled span3"  tabindex="0" aria-controls="sample_1" rowspan="1" colspan="1">名称</th>
+                            <th class="hidden-480 ">关键词</th>
+							<th class="hidden-480" >说明</th>
+                            <th class="hidden-480" style="width:35px;">状态</th>
+                            <th class="hidden-480" >添加时间</th>
                             <th class="hidden-480 sorting_disabled" role="columnheader" rowspan="1" colspan="1" aria-label="" ></th>
                         </tr>
                         </thead>
@@ -100,26 +106,20 @@
                             <tr class="gradeX <php>if($key%2==0){echo 'odd';}else{echo 'even';}</php>">
                                 <td class=" sorting_1"><div class="checker"><span><input type="checkbox" class="checkboxes" value="{$vo.id}"></span></div></td>
                                 <td class="hidden-480">{++$key}</td>
-                                <volist name="article" id="art" key="kyes">
-                                    <eq name="$kyes" value="0">
-                                        <td class="" style="width:150px;">{$vo[$art['name']]}</td>
-                                        <else />
-                                        <td class="hidden-480" title="{$vo[$art['name']]}" style="width:100px;">
-                                            <if condition="$art['type'] eq 4">
-                                                <php>
-                                                    $items = explode(',',$art['items']);
-                                                    echo $items[$vo[$art['name']]];
-                                                </php>
-                                                <else />
-                                                {$vo[$art['name']]|mb_substr=0,12}
-                                            </if>
-                                        </td>
+                                <td class=""><a href="__URL__/addatlas?id={$vo.id}">{$vo.title}</a></td>
+                                <td class="hidden-480">{$vo.keywords}</td>
+                                <td class="hidden-480">{$vo.description}</td>
+                                <td class="hidden-480 "><eq name="vo.status" value="1"><label class="label label-error">禁用</label><else/><label class="label label-success">启用</label></eq></td>
+                                <td class="hidden-480">{$vo.date|date='Y-m-d h:i:s',###}</td>
+                                <td class="text text-center">
+                                    <!-- <a href="__URL__/check?id={$vo.id}" class="btn mini">查看</a> -->
+                                    <a href="__URL__/add?aid={$vo.id}&id={$vo.column_id}&p={$Think.get.p}" class="btn blue mini">编辑</a>
+                                    <eq name="vo.status" value="0">
+                                        <a href="__URL__/status?id={$vo.id}&t=forbidden&p={$Think.get.p}&ajax=0&cid={$Think.get.id}" class="btn black mini">禁用</a>
+                                        <else/>
+                                        <a href="__URL__/status?id={$vo.id}&t=enable&p={$Think.get.p}&ajax=0&cid={$Think.get.id}" class="btn yellow mini">启用</a>
                                     </eq>
-                                </volist>
-                                <td class="hidden-480" style="width:150px;">{$vo.date|date='Y-m-d h:i:s',###}</td>
-                                <td class="text text-center" style="width:150px;">
-                                    <a href="__URL__/formsee?id={$vo.id}&mod={$column.name}" class="btn blue mini formsee">查看</a>
-                                    <a href="__URL__/formdel?id={$vo.id}&mod={$column.name}" class="btn red mini delform">删除</a>
+                                    <a href="javascript:void(0);" data-role="__URL__/status?id={$vo.id}&t=delete&p={$Think.get.p}&ajax=0&cid={$Think.get.id}" class="btn red mini btn-del">删除</a>
                                 </td>
                             </tr>
                         </volist>
@@ -226,41 +226,6 @@
                 }
             });
         });
-        $('.delform').click(function(e){
-            e.preventDefault();
-            var url =$(this).attr('href');
-            layer.confirm('删除后不能恢复数据,您确定要删除吗?', {
-              icon:5,
-              btn: ['确定','不了'] //按钮
-            }, function(){
-                layer.closeAll();
-                var index = layer.load(2,{
-                    shade: [0.4,'#000'] //0.1透明度的白色背景
-                });
-                $.get(url,function(data){ 
-                    layer.closeAll();
-                    if(data.status==1){
-                        layer.alert(data.msg,{icon:6,end:function(){
-                            window.location.reload();
-                        }});
-                    }else {
-                        layer.alert(data.msg,{icon:5});
-                    }
-                });
-            });
-        });
-        $('.formsee').click(function(e){
-            e.preventDefault();
-            var url = $(this).attr('href');
-            layer.open({
-              type: 2,
-              title: '查看留言明细',
-              shadeClose: true,
-              shade: 0.8,
-              area: ['50%', '60%'],
-              content: url
-            }); 
-        })
     });
 </script>
 <script type="text/javascript" src="__METRONIC_JS__/select2.min.js"></script>

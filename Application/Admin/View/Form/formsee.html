@@ -1,0 +1,21 @@
+<link href="__METRONIC_CSS__/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+
+<div style="width:80%;margin:50px auto 0px;">
+	<table class="table table-bordered">
+		<volist name="form" id="art">
+            <tr>
+            	<td>{$art.title}</td>
+            	<td>
+            		<if condition="$art['type'] eq 4">
+	                    <php>
+	                        $items = explode(',',$art['items']);
+	                        echo $items[$article[$art['name']]];
+	                    </php>
+	                    <else />
+	                    {$article[$art['name']]|mb_substr=0,12}
+	                </if>
+            	</td>
+            </tr>
+        </volist>
+	</table>
+</div>

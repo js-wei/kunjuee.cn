@@ -1,12 +1,8 @@
 <include file="Common:header"/>
     <!--BEGIN FORM STYLE-->
 	<link rel="stylesheet" href="__PLUG__/Uploadify/uploadify.css" />
-	<script type="text/javascript" src="__PLUG__/Uploadify/jquery.uploadify.min.js"></script>
     <link rel="stylesheet" type="text/css" href="__PLUG__/kindeditor/themes/default/default.css">
-    <link rel="stylesheet" href="__PLUG__/kindeditor/plugins/code/prettify.css" />
-    <script charset="utf-8" src="__PLUG__/kindeditor/kindeditor.js"></script>
-    <script charset="utf-8" src="__PLUG__/kindeditor/lang/zh_CN.js"></script>
-    <script charset="utf-8" src="__PLUG__/kindeditor/plugins/code/prettify.js"></script>
+	<script type="text/javascript" src="__PLUG__/Uploadify/jquery.uploadify.min.js"></script>
     <!--END FORM STYLE-->
     <!-- BEGIN CONTAINER -->
     <div class="page-container">
@@ -54,7 +50,7 @@
                     <div class="span12">
                         <div class="portlet box purple">
                             <div class="portlet-title">
-                                <div class="caption"><i class="icon-reorder"></i>{$model.name|default='添加控制器'}</div>
+                                <div class="caption"><i class="icon-reorder"></i>{$model.name|default='添加图集'}</div>
                                 <div class="tools">
                                     <a href="javascript:;" class="collapse"></a>
                                     <a href="#portlet-config" data-toggle="modal" class="config"></a>
@@ -73,28 +69,14 @@
                                         <button class="close" data-dismiss="alert"></button>
                                         请填写完表单完成
                                     </div>
+                                    
                                     <div class="control-group">
-                                        <label class="control-label">父级控制器<span class="required">*</span></label>
+                                        <label class="control-label">名称<span class="required">*</span></label>
                                         <div class="controls">
-                                            <select class="span4 m-wrap" name="column_id">
-                                                <volist name="column_list" id="cate">
-                                                    <option value="{$cate.id}" <eq name="cate.id" value="$Think.get.id">selected='selected'</eq>>{$cate.html}{$cate.title}</option>
-                                                </volist>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="control-group">
-                                        <label class="control-label">标题<span class="required">*</span></label>
-                                        <div class="controls">
-                                            <input type="text" name="title" id="control-name" data-required="1" class="span4 m-wrap" placeholder="标题" value="{$article.title}">
+                                            <input type="text" name="title" id="control-name" data-required="1" class="span4 m-wrap" placeholder="图集名称" value="{$article.title}">
                                             <input type="hidden" value="{$Think.get.id}" name="cid">
                                             <input type="hidden" value="{$Think.get.p}" name="p">
-                                        </div>
-                                    </div>
-                                    <div class="control-group">
-                                        <label class="control-label">作者</label>
-                                        <div class="controls">
-                                            <input type="text" name="author" id="control-name" data-required="1" class="span4 m-wrap" placeholder="作者" value="官方发布">
+                                            <input type="hidden" value="{$Think.get.aid}" name="id">
                                         </div>
                                     </div>
                                     <div class="control-group">
@@ -105,9 +87,9 @@
                                         </div>
                                     </div>
                                     <div class="control-group">
-                                        <label class="control-label">说明</label>
+                                        <label class="control-label">描述</label>
                                         <div class="controls">
-                                            <textarea name="description" class="span4 m-wrap" placeholder="说明">{$article.description}</textarea>
+                                            <textarea name="description" class="span4 m-wrap" placeholder="简单描述">{$article.description}</textarea>
                                         	<div class="text-error">*很重要最好填写,字数最好在250字内,详细请百度"搜索引擎描述"词条</div>
 										</div>
                                     </div>
@@ -129,35 +111,6 @@
 													<input type="hidden" name="image" id="reply_img">
 												</notempty>
 											</div>
-										</div>
-									</div>
-                                    <div class="control-group">
-                                        <label class="control-label">内容 <span class="required">*</span></label>
-                                        <div class="controls">
-                                            <textarea name="content"  class="span6 m-wrap " placeholder="内容">{$article.content|htmlspecialchars_decode}</textarea>
-                                        </div>
-                                    </div>
-                                    <div class="control-group">
-										<label class="control-label">属性</label>
-										<div class="controls">
-											<label class="checkbox">
-												<input type="checkbox" name="attr[com]" value="1" <eq name="article.com" value="1">checked="checked"</eq>>推荐
-											</label>
-											<label class="checkbox">
-												<input type="checkbox" name="attr[hot]" value="1" <eq name="article.hot" value="1">checked="checked"</eq>>最热
-											</label>
-											<label class="checkbox">
-												<input type="checkbox" name="attr[new]" value="1" <eq name="article.new" value="1">checked="checked"</eq>>最新
-											</label>
-											<label class="checkbox">
-												<input type="checkbox" name="attr[head]" value="1" <eq name="article.head" value="1">checked="checked"</eq>>头条
-											</label>
-											<label class="checkbox">
-												<input type="checkbox" name="attr[top]" value="1" <eq name="article.top" value="1">checked="checked"</eq>>置顶
-											</label>
-											<label class="checkbox">
-												<input type="checkbox" name="attr[img]" value="1" <eq name="article.img" value="1">checked="checked"</eq>>图文
-											</label>
 										</div>
 									</div>
                                     <div class="control-group">
@@ -206,39 +159,23 @@
     <script type="text/javascript">
         $(function(){
             FormValidation.init();
-            KindEditor.ready(function(K) {
-                var editor1 = K.create('textarea[name="content"]', {
-                    cssPath : '__PLUG__/kindeditor/plugins/code/prettify.css',
-                    uploadJson : "{:U('Uploadify/KindEditorUploadImage')}",
-					height:350,
-					width:750,
-                    newlineTag:"p",
-                    allowFileManager : false,
-                    afterBlur: function(){this.sync();},
-                });
-                prettyPrint();
-                $('form').submit(function(e){
-	                e.preventDefault();
-	                if($('form').valid()){
-	                	if(editor1.count()<=0){
-	                		layer.alert('请填写主要内容',{icon:5});
-	                		return false;
-	                	}
-	                    var index = layer.load(2,{
-							shade: [0.4,'#fff'] //0.1透明度的白色背景
-						});
-		                $.post('__URL__/Insert',$('form').serialize(),function(data){
-		                    layer.close(index);
-							if(data.status==1){
-		                        layer.alert(data.msg,{icon:6,end:function(){
-		                            location.href = data.redirect;
-		                        }});
-		                    }else {
-		                        layer.alert(data.msg,{icon:5});
-		                    }
-		                })
-	                }
-	            });
+            $('form').submit(function(e){
+                e.preventDefault();
+                if($('form').valid()){
+                    var index = layer.load(2,{
+						shade: [0.4,'#fff'] //0.1透明度的白色背景
+					});
+	                $.post('__URL__/Insert',$('form').serialize(),function(data){
+	                    layer.close(index);
+						if(data.status==1){
+	                        layer.alert(data.msg,{icon:6,end:function(){
+	                            location.href = data.redirect;
+	                        }});
+	                    }else {
+	                        layer.alert(data.msg,{icon:5});
+	                    }
+	                })
+                }
             });
         });
 		 function imgView(pic_url){

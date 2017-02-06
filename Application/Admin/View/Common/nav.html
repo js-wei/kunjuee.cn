@@ -123,7 +123,7 @@
 									</ul>
 									<else/>
 									<li  class="nav-item <eq name='volt1.id' value='$Think.get.id'>active</eq>">
-										<a href="<eq name='volt1.type' value='5'>{:U('form/index?id='.$volt1['id'])}</eq><eq name='volt1.type' value='3'>{:U('Single/index?id='.$volt1['id'])}</eq><eq name='volt1.type' value='1'>{:U('Article/index?id='.$volt1['id'])}</eq>">
+										<a href="<eq name='volt1.type' value='7'>{:U('atlas/index?id='.$volt['id'])}</eq><eq name='volt1.type' value='5'>{:U('form/index?id='.$volt1['id'])}</eq><eq name='volt1.type' value='3'>{:U('Single/index?id='.$volt1['id'])}</eq><eq name='volt1.type' value='1'>{:U('Article/index?id='.$volt1['id'])}</eq>">
 											<notempty name="volt1.ico">
 												<i class="{$volt1.ico}"></i>
 												<else/>
@@ -138,7 +138,7 @@
 					</li>
 				<else/>
 				<li  class="nav <eq name='volt.id' value='$Think.get.id'>active</eq> ">
-					<a href="<eq name='volt.type' value='5'>{:U('form/index?id='.$volt['id'])}</eq><eq name='volt.type' value='3'>{:U('Single/index?id='.$volt['id'])}</eq><eq name='volt.type' value='1'>{:U('Article/index?id='.$volt['id'])}</eq>">
+					<a href="<eq name='volt.type' value='7'>{:U('atlas/index?id='.$volt['id'])}</eq><eq name='volt.type' value='5'>{:U('form/index?id='.$volt['id'])}</eq><eq name='volt.type' value='3'>{:U('Single/index?id='.$volt['id'])}</eq><eq name='volt.type' value='1'>{:U('Article/index?id='.$volt['id'])}</eq>">
 						<notempty name="volt.ico">
 							<i class="{$volt.ico}"></i>
 							<else/>

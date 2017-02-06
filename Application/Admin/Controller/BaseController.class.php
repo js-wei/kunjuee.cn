@@ -27,7 +27,8 @@ class BaseController extends Controller {
         //系统信息
         $this->os= $os = $this->_sys();
         //
-        $this->articleList = $this->articleList();
+        $this->articleList = $articleList =  $this->articleList();
+		
 	}
 
     /**

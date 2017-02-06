@@ -4,10 +4,11 @@ return array(
     'URL_ROUTER_ON'   => true, //开启路由
 
     'URL_ROUTE_RULES' => array( //定义路由规则
-        '/^(\w+)_(\d+)$/'  		            =>'News/index?id=:1&p=:2',
-        '/^(\w+)$/'							=>'News/index?id=:1',
-		'/detail\/(\d+)$/'				    =>'News/detail?aid=:1',
-        '/^(\w+)\/(\w+)$/'				    =>'News/index?id=:1&cid=:2',
+    	'/^add.*$/'								=>'public/addform?fmid=:1',		//添加
+        '/^(\w+)_(\d+)$/'  		            	=>'News/index?id=:1&p=:2',
+        '/^(\w+)$/'								=>'News/index?id=:1',
+		'/detail\/(\d+)$/'				    	=>'News/detail?aid=:1',
+        '/^(\w+)\/(\w+)$/'				    	=>'News/index?id=:1&cid=:2',
     ),
     'PAGE_SIZE'=>5,
 	//静态缓存

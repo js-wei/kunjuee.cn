@@ -35,7 +35,7 @@ class NewsController extends BaseController{
                 $this->list  = $list =  M('article')->cache(true,60,'Xcache')->field('id,content')->where($map)->find();
                 break;
             case 5:
-                $form = "<form class=\"form-horizontal\" id=\"form1\" role=\"form\" action=\"{U('/addform')}\" method=\"post\" autocomplete=\"off\">\n\t";
+                $form = "<form class=\"form-horizontal\" id=\"form1\" role=\"form\" action=\"".U('/add_forms')."\" method=\"post\" autocomplete=\"off\">\n\t";
                 $list =  M('form')->cache(true,60,'Xcache')->field('dates',true)->where($map)->select();
                 
                 foreach ($list as $k => $v) {
@@ -44,86 +44,134 @@ class NewsController extends BaseController{
                     }
                     $placeholder = !empty($v['tooltips'])?$v['tooltips']:$v['title'];
 
-                    $form .="<div class=\"form-group\">\t\n\t<label class=\"col-sm-2 control-label\">{$v['title']}</label>";
+                    $form .="<div class=\"form-group\">\t\n\t\t<label class=\"col-sm-3 control-label\">{$v['title']}</label>";
                     if($v['type']==1){
-                        $form .= "<input type=\"text\" name=\"{$v['name']}\" placeholder=\"{$placeholder}\" class=\"form-control\">\n\t";
+                        $form .= "\t\n\t\t<div class=\"col-sm-9\">\t\n\t\t\t<input type=\"text\" name=\"{$v['name']}\" placeholder=\"{$placeholder}\" class=\"form-control\">\n\t\t</div>\n\t";
                     }else if($v['type']==2){
-                        $form .= "<input type=\"number\" name=\"{$v['name']}\" placeholder=\"{$placeholder}\" class=\"form-control\">\n\t";
+                        $form .= "\t\n\t\t<div class=\"col-sm-9\">\t\n\t\t\t<input type=\"number\" name=\"{$v['name']}\" placeholder=\"{$placeholder}\" class=\"form-control\">\n\t\t</div>\n\t";
                     }else if($v['type']==3){
-                        $form .= "<input type=\"number\" name=\"{$v['name']}\" placeholder=\"{$placeholder}\" class=\"form-control\">\n\t";
+                        $form .= "\t\n\t\t<div class=\"col-sm-9\">\t\n\t\t\t<input type=\"number\" name=\"{$v['name']}\" placeholder=\"{$placeholder}\" class=\"form-control\">\n\t\t</div>\n\t";
                     }else if($v['type']==4){
                         $_temp = explode(',',$v['items']);
+                        $form .= "\n\t\t<div class=\"col-sm-9\">\t\t";
                         foreach ($_temp as $k1 => $v1) {
-                            $form .= "<div class=\"radio-inline\">\t\n";
-                            $form .="\t\t<label class=\"\" style=\"font-weight:normal;\"><input type=\"radio\" value=\"{$k1}\" name=\"{$v['name']}\"";
+                            $form .="\n\t\t\t<label class=\"checkbox-inline\"><input type=\"radio\" value=\"{$k1}\" name=\"{$v['name']}\"";
                             if(!$k1){
                                 $form .=" checked=\"checked\"";
                             }
-                            $form .=">{$v1}</label>\t\n\t</div>\t\n\t";
+                            $form .=">{$v1}</label>";
                         }
+                        $form .= "\n\t\t</div>\t\n\t";
                     }else if($v['type']==5){
                         $_temp = explode(',',$v['items']);
+                        $form .= "\n\t\t<div class=\"col-sm-9\">\t\t";
                         foreach ($_temp as $k1 => $v1) {
-                            $form .= "<div class=\"radio-inline\">\t\n";
-                            $form .="\t\t<label class=\"\" style=\"font-weight:normal;\"><input type=\"checkbox\" value=\"{$k1}\" name=\"{$v['name']}\"";
-                            if(!$k1){
-                                $form .=" checked=\"checked\"";
-                            }
-                            $form .=">{$v1}</label>\t\n\t</div>\t\n\t";
-                        }    
+                            $form .="\n\t\t\t<label class=\"checkbox-inline\"><input type=\"checkbox\" value=\"{$v1}\" name=\"{$v['name']}[]\"";
+                            $form .=">{$v1}</label>";
+                        }
+                        $form .= "\n\t\t</div>\t\n\t";
                     }else{
-                        $form .= "<textarea  class=\"form-control\" name=\"{$vo['name']}\" placeholder=\"\" rows=\"5\"></textarea>";
+                        $form .= "<div class=\"col-sm-9\">\t\n\t\t\t<textarea  class=\"form-control\" name=\"{$v['name']}\" placeholder=\"\" rows=\"5\"></textarea>\n\t\t</div>\n\t";
                     }
-                    $form .="</div>";
+                    $form .="</div>\n\t";
                 }
-                $form .= '<input type="hidden" name="m" value="'.I('get.id').'"><div class="form-group"><div class="col-sm-offset-2 col-sm-10"><button type="submit" class="btn btn-info">提交</button></div></div></form>';
-                // foreach ($list as $k => $vo) {
-                //     $form .= "{$vo['name']}:{";
-                //     if($vo['requird']==1){
-                //         $form .= "required:true";
-                //     }
-                //     if($vo['connect']==1){
-                //         $form .= ",isPhone:true";
-                //     }
-                //     if($vo['email']==1){
-                //         $form .= ",email:true";
-                //     }
-                //     if($vo['url']==1){
-                //         $form .= ",url:true";
-                //     }
-                //     if($vo['type']==2){
-                //         $form .= ",number:true";
-                //     }
-                //     if($vo['type']==3){
-                //         $form .= ",date:true";
-                //     }
-                //     $form .='},';
-                // }
-                // $form .='},messages:{';
-                // foreach ($list as $k => $vo) {
-                //     $form .= "{$vo['name']}:{";
-                //     if($vo['requird']==1){
-                //         $form .= "required:'请填写{$vo['title']}'";
-                //     }
-                //     if($vo['connect']==1){
-                //         $form .= ",isPhone:'手机/固话号码不正确'";
-                //     }
-                //     if($vo['email']==1){
-                //        $form .= ",email:'电子邮箱格式不正确'";
-                //     }
-                //     if($vo['url']==1){
-                //        $form .= ",url:'网址格式不正确'";
-                //     }
-                //     if($vo['number']==1){
-                //        $form .= ",number:'请填写数字'";
-                //     }
-                //     if($vo['date']==1){
-                //       $form .= ",date:'请填写正确的日期格式'";
-                //     }
-                //     $form .='},';
-                // }
+                $form .= "<input type=\"hidden\" name=\"m\" value=\"".I('get.id')."\">";
+                $form .= "\n\t<div class=\"form-group\">\n\t\t<div class=\"col-sm-offset-3 col-sm-9\">\n\t\t\t<button type=\"submit\" class=\"btn btn-info\">提交</button>\n\t\t</div>\n\t</div>\n</form>
+<script type=\"text/javascript\">
+$(function(){
+    $(\"#form1\").validate({
+        rules:{\n\t\t";
+            foreach ($list as $k => $vo) {
+                $t = ($k<count($list)-1)?"\t\t":'';
+                $form .= ($vo['type']!=5)?"'{$vo['name']}':{\n\t\t":"'{$vo['name']}[]':{\n\t\t";
+                if($vo['requird']==1){
+                    $form .= "\trequired:true";
+                }
+                if($vo['connect']==1){
+                    $form .= ",\n\t\t\tisPhone:true";
+                }
+                if($vo['email']==1){
+                    $form .= ",\n\t\t\temail:true";
+                }
+                if($vo['url']==1){
+                    $form .= ",\n\t\t\turl:true";
+                }
+                if($vo['type']==2){
+                    $form .= ",\n\t\t\tnumber:true";
+                }
+                if($vo['type']==3){
+                    $form .= ",\n\t\t\tdate:true";
+                }
+                $form .="\n\t\t},\n".$t;
+            }
+            $form .="\t},
+        messages:{\n\t\t";
+            foreach ($list as $k => $vo) {
+                $t = ($k<count($list)-1)?"\t\t":'';
+                $form .= ($vo['type']!=5)?"'{$vo['name']}':{\n\t\t":"'{$vo['name']}[]':{\n\t\t";
+                if($vo['requird']==1){
+                    if(!empty($vo['tooltips'])){
+                        $form .= "\trequired:'请填写{$vo['tooltips']}'";
+                    }else{
+                        $form .= "\trequired:'请填写{$vo['title']}'";
+                    }
+                    
+                }
+                if($vo['connect']==1){
+                    $form .= ",\n\t\t\tisPhone:'手机/固话号码不正确'";
+                }
+                if($vo['email']==1){
+                   $form .= ",\n\t\t\temail:'电子邮箱格式不正确'";
+                }
+                if($vo['url']==1){
+                   $form .= ",\n\t\t\turl:'网址格式不正确'";
+                }
+                if($vo['number']==1){
+                   $form .= ",\n\t\t\tnumber:'请填写数字'";
+                }
+                if($vo['date']==1){
+                  $form .= ",\n\t\t\tdate:'请填写正确的日期格式'";
+                }
+                $form .="\n\t\t},\n".$t;
+            }
+            $form .="\t},
+        errorPlacement: function (error, element) { //指定错误信息位置
+            if(element.is(':radio') || element.is(':checkbox')) { //如果是radio或checkbox
+               var eid = element.attr('name'); //获取元素的name属性
+               error.appendTo(element.parent().parent()); //将错误信息添加当前元素的父结点后面
+            }else{
+               error.insertAfter(element);
+            }
+        }
+    });
+    $('#form1').submit(function(e){
+        e.preventDefault();
+        if($('#form1').valid()){
+            var index = layer.load(2, {
+                shade: [0.4,'#000'] //0.1透明度的白色背景
+            });
+            $.post($('#form1').attr('action'),$('#form1').serialize(),function (data) {
+                if(data.status==1){
+                    layer.close(index);
+                    layer.alert(data.msg,{icon:6,end:function () {
+                        $('#form1')[0].reset();
+                    }});
+                }else {
+                    layer.alert(data.msg,{icon:5});
+                }
+            });
+        }
+    })";
+            $form .= "\n});\n</script>\n
+            <link rel=\"stylesheet\" type=\"text/css\" href=\"{$this->site['url']}/Public/plug/jquery.validate/jquery.validate.css\">
+            <script type=\"text/javascript\" src=\"{$this->site['url']}/Public/plug/layer/layer.js\"></script>
+            <script type=\"text/javascript\" src=\"{$this->site['url']}/Public/plug/jquery.validate/jquery.metadata.js\"></script>
+            <script type=\"text/javascript\" src=\"{$this->site['url']}/Public/plug/jquery.validate/jquery.validate.min.js\"></script>
+            <script type=\"text/javascript\" src=\"{$this->site['url']}/Public/plug/jquery.validate/jQuery.validate.message_cn.js\"></script>
+            <script type=\"text/javascript\" src=\"{$this->site['url']}/Public/plug/jquery.validate/my.rules.js\"></script> 
+";
+
                 $this->assign('submit_forms',$form);
-                //$this->tpl='form1';
                 $this->list = $list;
                 break;
         }

@@ -44,11 +44,12 @@ class FormController extends BaseController{
 
 	public function formsee($id=0,$mod=''){
 		if(!$id || empty($mod)){
-			$this->ajaxReturn(['status'=>0,'msg'=>'获取数据失败']);
+			//$this->ajaxReturn(['status'=>0,'msg'=>'获取数据失败']);
 		}
-		$m = M($mod);
-		$this->article=$article =$m->find($id);
-		p($article);
+		$this->article=$article =M($mod)->find($id);
+		$name =M('column')->field('id')->where(['name'=>$mod])->find();
+		$this->form=$form =D('form')->where(['fid'=>$name['id'],'status'=>0])->select();
+		$this->display();
 	}
 	public function formdel($id=0,$mod=''){
 		if(!$id || empty($mod)){
