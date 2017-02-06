@@ -1,4 +1,2 @@
-/************jQuery.Validate插件样式开始********************/
 label.error { background: no-repeat 10px 0px; color: red; padding-left:5px; font-weight: bold; }
-input.error { border: solid 1px red; }
-/************jQuery.Validate插件样式结束********************/
+input.error,textarea.error { border: solid 1px red; }
