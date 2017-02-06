@@ -15,4 +15,7 @@ return [
     'DB_PWD'    => '123456', // 密码
     'DB_PORT'   => 3306, // 端口
     'DB_PREFIX' => 'think_', // 数据库表前缀
+    'DB_SQL_BUILD_CACHE' => true,
+	'DB_SQL_BUILD_QUEUE' => 'Xcache',
+	'DB_SQL_BUILD_LENGTH' => 20, // SQL缓存的队列长度
 ];

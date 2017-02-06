@@ -20,7 +20,7 @@ class NewsController extends BaseController{
      */
     public function index(){
         $id=$this->current['name'];
-        $id = M('column')->field('id,title')->where(array('name'=>$id))->find();
+        $id = M('column')->cache(true,60,'Xcache')->field('id,title')->where(array('name'=>$id))->find();
         $map['column_id']=$id['id'];
         $map['status']=0;
 
@@ -32,18 +32,19 @@ class NewsController extends BaseController{
                 $this->list = $list;
                 break;
             case 3:
-                $this->list  = $list =  M('article')->field('id,content')->where($map)->find();
+                $this->list  = $list =  M('article')->cache(true,60,'Xcache')->field('id,content')->where($map)->find();
                 break;
             case 5:
                 $form = "<form class=\"form-horizontal\" id=\"form1\" role=\"form\" action=\"{U('/addform')}\" method=\"post\" autocomplete=\"off\">\n\t";
-                $list =  M('form')->field('dates',true)->where($map)->select();
+                $list =  M('form')->cache(true,60,'Xcache')->field('dates',true)->where($map)->select();
                 
                 foreach ($list as $k => $v) {
+                    if($v['type']==4 || $v['type']==5){
+                         $list[$k]['items'] = explode(',',$v['items']);
+                    }
                     $placeholder = !empty($v['tooltips'])?$v['tooltips']:$v['title'];
-                   
-                    // if($v['type']==4 || $v['type']==5){
-                    //     $list[$k]['items'] = explode(',',$v['items']);
-                    // }
+
+                    $form .="<div class=\"form-group\">\t\n\t<label class=\"col-sm-2 control-label\">{$v['title']}</label>";
                     if($v['type']==1){
                         $form .= "<input type=\"text\" name=\"{$v['name']}\" placeholder=\"{$placeholder}\" class=\"form-control\">\n\t";
                     }else if($v['type']==2){
@@ -56,59 +57,74 @@ class NewsController extends BaseController{
                             $form .= "<div class=\"radio-inline\">\t\n";
                             $form .="\t\t<label class=\"\" style=\"font-weight:normal;\"><input type=\"radio\" value=\"{$k1}\" name=\"{$v['name']}\"";
                             if(!$k1){
-                                $form .="checked=\"checked\">";
+                                $form .=" checked=\"checked\"";
                             }
-                            $form .="{$v1}</label>\t\n\t</div>\t\n\t";
+                            $form .=">{$v1}</label>\t\n\t</div>\t\n\t";
                         }
-                    }else if(){
-                            
+                    }else if($v['type']==5){
+                        $_temp = explode(',',$v['items']);
+                        foreach ($_temp as $k1 => $v1) {
+                            $form .= "<div class=\"radio-inline\">\t\n";
+                            $form .="\t\t<label class=\"\" style=\"font-weight:normal;\"><input type=\"checkbox\" value=\"{$k1}\" name=\"{$v['name']}\"";
+                            if(!$k1){
+                                $form .=" checked=\"checked\"";
+                            }
+                            $form .=">{$v1}</label>\t\n\t</div>\t\n\t";
+                        }    
+                    }else{
+                        $form .= "<textarea  class=\"form-control\" name=\"{$vo['name']}\" placeholder=\"\" rows=\"5\"></textarea>";
                     }
-                   
+                    $form .="</div>";
                 }
-                 p($form);die;
-                $con =<<<STR
-<form class="form-horizontal" id="form1" role="form" action="__URL__/addform" method="post" autocomplete="off">
-                        <volist name="list" id="vo">
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label">{$vo['title']}</label>
-                                <div class="col-sm-4">
-                                   <eq name="vo.type" value="1">
-                                       <input type="<eq name='vo.type' value='1'>text</eq><eq name='vo.type' value='2'>number</eq><eq name='vo.type' value='3'>text</eq>" name="{$vo['name']}" placeholder="<notempty name="vo.tooltips">{$vo['tooltips']}<else />{$vo['title']}</notempty>" class="form-control" autocomplete="off">
-                                   </eq>
-                                   <eq name="vo.type" value="4">
-                                        <volist name="vo.items" id="ra">
-                                            <div class="radio-inline">
-                                                <label class="" style="font-weight:normal;">
-                                                    <input type="radio" value="{$key}" name="{$vo['name']}" <eq name="key" value="0">checked="checked"</eq>>{$ra}
-                                                </label>
-                                            </div>
-                                        </volist>
-                                   </eq>
-                                   <eq name="vo.type" value="5">
-                                        <volist name="vo.items" id="ck">
-                                            <div class="checkbox-inline">
-                                                <label class="" style="font-weight:normal;">
-                                                    <input type="checkbox" value="{$ck}"name="{$vo['name']}[]">{$ck}
-                                                </label>
-                                            </div>
-                                        </volist>
-                                   </eq>
-                                   <eq name="vo.type" value="6">
-                                       <textarea  class="form-control" name="{$vo['name']}" placeholder="<notempty name="vo.tooltips">{$vo['tooltips']}<else />{$vo['title']}</notempty>" rows="5"></textarea>
-                                   </eq>
-                                </div>
-                            </div>
-                        </volist>
-                        <input type="hidden" name="m" value="{$_REQUEST['id']}">
-                        <div class="form-group">
-                            <div class="col-sm-offset-2 col-sm-10">
-                              <button type="submit" class="btn btn-info">提交</button>
-                            </div>
-                        </div>
-                    </form>
-STR;
-                $this->assign('submit_forms',$con);
-                $this->tpl='form';
+                $form .= '<input type="hidden" name="m" value="'.I('get.id').'"><div class="form-group"><div class="col-sm-offset-2 col-sm-10"><button type="submit" class="btn btn-info">提交</button></div></div></form>';
+                // foreach ($list as $k => $vo) {
+                //     $form .= "{$vo['name']}:{";
+                //     if($vo['requird']==1){
+                //         $form .= "required:true";
+                //     }
+                //     if($vo['connect']==1){
+                //         $form .= ",isPhone:true";
+                //     }
+                //     if($vo['email']==1){
+                //         $form .= ",email:true";
+                //     }
+                //     if($vo['url']==1){
+                //         $form .= ",url:true";
+                //     }
+                //     if($vo['type']==2){
+                //         $form .= ",number:true";
+                //     }
+                //     if($vo['type']==3){
+                //         $form .= ",date:true";
+                //     }
+                //     $form .='},';
+                // }
+                // $form .='},messages:{';
+                // foreach ($list as $k => $vo) {
+                //     $form .= "{$vo['name']}:{";
+                //     if($vo['requird']==1){
+                //         $form .= "required:'请填写{$vo['title']}'";
+                //     }
+                //     if($vo['connect']==1){
+                //         $form .= ",isPhone:'手机/固话号码不正确'";
+                //     }
+                //     if($vo['email']==1){
+                //        $form .= ",email:'电子邮箱格式不正确'";
+                //     }
+                //     if($vo['url']==1){
+                //        $form .= ",url:'网址格式不正确'";
+                //     }
+                //     if($vo['number']==1){
+                //        $form .= ",number:'请填写数字'";
+                //     }
+                //     if($vo['date']==1){
+                //       $form .= ",date:'请填写正确的日期格式'";
+                //     }
+                //     $form .='},';
+                // }
+                $this->assign('submit_forms',$form);
+                //$this->tpl='form1';
+                $this->list = $list;
                 break;
         }
         $this->carousel = $this->get_site_carousel();
@@ -122,7 +138,7 @@ STR;
     public function detail($aid=0){
         if($aid){
             $m = D('Article');
-            $detail = $m->field('gid',true)->find($aid);
+            $detail = $m->cache(true,60,'Xcache')->field('gid',true)->find($aid);
             $m->set_hits($detail['id']);
             $this->prev = $prev = $m->get_pre($detail['id'],$detail['column_id']);
             $this->next =$next = $m->get_next($detail['id'],$detail['column_id']);
@@ -145,7 +161,7 @@ STR;
     protected function getlist($model = '', $map = '', $order = '',$group = '', $pagination = '', $field = '*') {
 
         $model=!empty($model)?$model:M(CONTROLLER_NAME);
-        $count = $model->where($map)->cache(true)->group($group)->count('*');
+        $count = $model->cache(true,60,'Xcache')->where($map)->group($group)->count('*');
         $pagination = $pagination ? $pagination : C('PAGE_SIZE');
 
         $p = new \Think\Page($count, $pagination,array('url'=>'/'.$_GET['id']?$_GET['id']:'news'));
@@ -161,8 +177,7 @@ STR;
         $p->allShow = 1;
         $show=$p->show1();
         $this->assign('page', $show);
-        $res = $model->where($map)->cache(true)->field($field)->group($group)->limit($p->firstRow . ',' . $p->listRows)->order($order)->select();
-
+        $res = $model->cache(true,60,'Xcache')->where($map)->field($field)->group($group)->limit($p->firstRow . ',' . $p->listRows)->order($order)->select();
         return $res;
     }
 }

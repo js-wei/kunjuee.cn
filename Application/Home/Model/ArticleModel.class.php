@@ -18,19 +18,19 @@ class ArticleModel extends Model{
         $where['id']=array('gt',$id);
         $where['del_id']=array('eq',0);
         $where['column_id']=$cid;
-        return M('Article')->field('id,title')->where($where)->limit(1)->order('id asc')->find();
+        return M('Article')->cache(true,60,'xcache')->field('id,title')->where($where)->limit(1)->order('id asc')->find();
     }
     public function get_next($id,$cid){
         $where['id']=array('lt',$id);
         $where['del_id']=array('eq',0);
         $where['column_id']=$cid;
-        $next = M('Article')->field('id,title')->where($where)->limit(1)->order('id desc')->find();
+        $next = M('Article')->cache(true,60,'xcache')->field('id,title')->where($where)->limit(1)->order('id desc')->find();
         return $next;
     }
     public function get_colunm($cid){
-        return M('column')->field('id,title,name')->find($cid);
+        return M('column')->cache(true,60,'xcache')->field('id,title,name')->find($cid);
     }
     public function set_hits($id=0){
-        M('Article')->where(array('id'=>$id))->setInc('hits',1);
+        M('Article')->cache(true,60,'xcache')->where(array('id'=>$id))->setInc('hits',1);
     }
 }

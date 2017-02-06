@@ -16,18 +16,18 @@
                                    <eq name="vo.type" value="4">
                                         <volist name="vo.items" id="ra">
                                             <div class="radio-inline">
-                                                <label class="" style="font-weight:normal;">
+                                               
                                                     <input type="radio" value="{$key}" name="{$vo.name|trim}" <eq name="key" value="0">checked="checked"</eq>>{$ra}
-                                                </label>
+                                                 
                                             </div>
                                         </volist>
                                    </eq>
                                    <eq name="vo.type" value="5">
                                         <volist name="vo.items" id="ck">
                                             <div class="checkbox-inline">
-                                                <label class="" style="font-weight:normal;">
+                                               
                                                     <input type="checkbox" value="{$ck}"name="{$vo.name|trim}[]">{$ck}
-                                                </label>
+                                              
                                             </div>
                                         </volist>
                                    </eq>
@@ -52,7 +52,7 @@
                             $("#form1").validate({
                                 rules:{
                                     <volist name="list" id="vo">
-                                        {$vo.name}:{
+                                        "{$vo.name}<eq name='vo.type' value='5'>[]</eq>":{
                                             <eq name='vo.requird' value='1'>required:true</eq>
                                         <eq name='vo.connect' value='1'>,isPhone:true</eq> 
                                         <eq name='vo.email' value='1'>,email:true</eq>
@@ -64,8 +64,8 @@
                                 },
                                 messages:{
                                     <volist name="list" id="vo">
-                                        {$vo.name}:{
-                                            <eq name='vo.requird' value='1'>required:"请填写{$vo.title}"</eq>
+                                        "{$vo.name}<eq name='vo.type' value='5'>[]</eq>":{
+                                           <eq name='vo.requird' value='1'>required:"请填写{$vo.title}"</eq>
                                         <eq name='vo.connect' value='1'>,isPhone:"手机\/固话号码不正确"</eq> 
                                         <eq name='vo.email' value='1'>,email:"电子邮箱格式不正确"</eq>
                                         <eq name='vo.url' value='1'>,url:"网址格式不正确"</eq>
@@ -73,7 +73,15 @@
                                         <eq name='vo.type' value='3'>,date:"请填写正确的日期格式"</eq>
                     },
                                 </volist>                      
+                                },
+                                errorPlacement: function (error, element) { //指定错误信息位置
+                                  if(element.is(':radio') || element.is(':checkbox')) { //如果是radio或checkbox
+                                   var eid = element.attr('name'); //获取元素的name属性
+                                   error.appendTo(element.parent().parent()); //将错误信息添加当前元素的父结点后面
+                                } else {
+                                   error.insertAfter(element);
                                 }
+                             }
                             });
 
                             $('#form1').submit(function(e){
@@ -99,7 +107,7 @@
                     <css file="__PLUG__/jquery.validate/jquery.validate.css"/>
                     <js file="__PLUG__/jquery.validate/jquery.metadata.js"/>
                     <js file="__PLUG__/jquery.validate/jquery.validate.min.js"/>
-                    <js file="__PLUG__/jquery.validate/jQuery.Validate.message_cn.js"/>
+                    <js file="__PLUG__/jquery.validate/jQuery.validate.message_cn.js"/>
                     <js file="__PLUG__/jquery.validate/my.rules.js"/> 
                 </notempty>
             </div>
