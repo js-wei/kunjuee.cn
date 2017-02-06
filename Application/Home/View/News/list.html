@@ -1,0 +1,37 @@
+<include file="Common:header"/>
+<div class="info news">
+    <div class="container">
+        <div class="row pin">
+            <include file="Common:nav"/>
+            <div class="col-md-10 col-sm-12 col-xs-12">
+                <notempty name="list">
+                    <volist name="list" id="vo">
+                        <div class="news-list">
+                            <h3 class="news-title"><a href="{:U('/detail/'.$vo['id'])}">{$vo.title}</a></h3>
+							<hr />
+                            <div class="news-info">
+                                <strong class="persent">{$current.title}</strong>
+                                <span class="time">{$vo.create_time|date='Y-m-d',###}</span>
+								<span class="nesw-num" style="padding-left:10px;"><i class="glyphicon glyphicon-eye-open"></i>&nbsp;{$vo.hits}</span>
+								<span class="nesw-num" style="padding-left:10px;"><i class="glyphicon glyphicon-user"></i>&nbsp;{$vo.author|default="官方发布"}</span>
+                            </div>
+                            <p class="news-content text-indent1_5">{$vo.description}</p>
+							<a class="pull-right" href="{:U('/detail/'.$vo['id'])}">阅读全文&gt;&gt;</a>
+                        </div>
+                    </volist>
+                    <else />
+                    <div class="text-center" style="line-height:150px;">
+                        暂无内容
+                    </div>
+                </notempty>
+                <style type="text/css">
+                    .pagination{width: 100%;}
+                </style>
+                <div class="col-md-12 col-sm-12 col-xs-12 foot-top kj-page">
+                    {$page}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<include file="Common:footer"/>

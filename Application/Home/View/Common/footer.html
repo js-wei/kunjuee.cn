@@ -1,0 +1,49 @@
+<!-- 站底 -->
+<div class="footer">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-3 col-sm-8 col-xs-12 foot-top">
+				<h4 class="footer-title">联系地址</h4>
+				<ul class="style-none foot-ul">
+					<li><i class="glyphicon glyphicon-home"></i>&nbsp;{$site.address}</li>
+					<li><i class="glyphicon glyphicon-phone"></i>&nbsp;手机：{$site.phone}</li>
+					<li><i class="glyphicon glyphicon-phone-alt"></i>&nbsp;电话/传真：{$site.tel}</li>
+					<li><i class="glyphicon glyphicon-envelope"></i>&nbsp;邮箱：{$site.email}</li>
+				</ul>
+			</div>
+			<div class="col-md-2 col-sm-4 col-xs-12 foot-top">
+				<h4 class="footer-title">栏目</h4>
+				<ul class="style-none foot-ul">
+					<volist name="nav_list" id="nav">					
+						<neq name='nav.type' value='6'><li><a href="{:U('/'.$nav['name'])}">{$nav.title}</a></li></neq>
+					</volist>
+				</ul>
+			</div>
+			<div class="col-md-3 col-sm-4 col-xs-12 foot-top">
+				<h4 class="footer-title">成功案例</h4>
+				<ul class="style-none foot-ul successAL">
+					<volist name="case" id="cs">
+						<li class="<if condition='$key%2 eq 0'>col-md-6 col-sb-12 col-xs-12<else />col-md-6 col-sb-12 col-xs-12</if>"><a href="{:U('/detail/'.$cs['id'])}">{$cs.title}</a></li>
+					</volist>
+				</ul>
+			</div>
+			<div class="col-md-4 col-sm-8 col-xs-12 foot-top">
+				<h4 class="footer-title">互动</h4>				
+				<div class="col-md-3">
+					<img src="__IMAGES__/qrcode.png" alt="LOGO" width="80px" style="margin-top:13px;">
+				</div>
+				<div class="col-md-9">
+					<h4>{$site.title}</h4>
+					<notempty name="site.copyright"><h6>&copy; {$site.copyright}</h6></notempty>
+					<notempty name="site.icp"><h6>{$site.icp}</h6></notempty>
+					<h6>技术支持：Jswei、Jason&nbsp;&nbsp;<a href="{$site.url}/admin.html">登录后台</a></h6>
+				</div>
+			</div>
+		</div>
+		{$site.code|htmlspecialchars_decode}
+	</div>
+</div>
+<script type="text/javascript" src="__PLUG__/bootstrap/js/bootstrap.min.js"></script>
+<script src="//cdn.bootcss.com/jquery.pin/1.0.1/jquery.pin.min.js"></script>
+</body>
+</html>

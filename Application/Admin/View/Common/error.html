@@ -1,0 +1,41 @@
+<include file="Common:header"/>
+<!-- BEGIN PAGE LEVEL STYLES -->
+<link href="__METRONIC_CSS__/error.css" rel="stylesheet" type="text/css"/>
+<!-- END PAGE LEVEL STYLES -->
+<!-- BEGIN CONTAINER -->
+<div class="page-container">
+    <!-- BEGIN SIDEBAR -->
+    <include file="Common:nav"/>
+    <!-- END SIDEBAR -->
+    <!-- BEGIN PAGE -->
+    <div class="page-content fill-content page-404-full-page">
+        <!-- BEGIN PAGE CONTAINER-->
+        <div class="span12 page-404">
+            <div class="number">
+                404
+            </div>
+            <div class="details">
+                <h3>对不起，页面迷路了！</h3>
+                <p><span id="secend">{$waitSecond}</span>秒后，返回到原页面。等不及了，<a href="javascript:void(0);" onclick="window.history.go(-1);">返回到原页面</a></p>
+            </div>
+        </div>
+        <!-- END PAGE CONTAINER-->
+    </div>
+    <!-- END PAGE -->
+</div>
+ <script type="text/javascript">
+   window.onload=function(){
+      setInterval('setTime()',1000);
+    }
+    function setTime(){
+      var e = document.getElementById('secend');
+      if( e.innerHTML>0){
+        e.innerHTML=--e.innerHTML;
+      }else{
+        //window.location.href='{$rd}';
+        window.history.go(-1);
+      }
+    } 
+  </script>
+<!-- END CONTAINER -->
+<include file="Common:footer"/>

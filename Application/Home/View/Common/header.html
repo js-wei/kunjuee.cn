@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>首页_{$site.title}</title>
+	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+	<link rel="bookmark" href="/favicon.ico"/>
+	<meta content="{$site.keywords}" name="keywords" />
+	<meta content="{$site.description}" name="description" />
+    <link rel="stylesheet" type="text/css" href="__CSS__/style.css">
+    <link rel="stylesheet" type="text/css" href="__PLUG__/bootstrap/css/bootstrap.min.css">
+	<script type="text/javascript" src="__JS__/jquery-1.11.3.min.js"></script>
+</head>
+<body>
+<!-- 导航 -->
+<div class="navbar kj-nav nav-title navbar-inverse navbar-fixed-top" role="navigation">
+	<div class="container">
+		<div class="navbar-header">
+			<button class="navbar-toggle" data-toggle="collapse" data-target="#example-navbar-collapse">
+				<span class="sr-only">切换导航</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a href="{$site.url}" class="navbar-brand logo"><img src="__IMAGES__/logo3.fw.png" alt="LOGO"></a>
+		</div>
+		<div class="collapse navbar-collapse kj-nav-pro navbar-right" id="example-navbar-collapse">
+			<ul class="nav navbar-nav">
+				<volist name="nav_list" id="nav">
+                    <li class="navTwoBox borderB <notempty name="nav.child">dropdown</notempty>" >
+						<a href="<eq name='nav.type' value='6'>{$nav['uri']}<else />{:U('/'.$nav['name'])}</eq>" <notempty name="nav.child">class="dropdown-toggle" data-toggle="dropdown"</notempty>>{$nav.title}</a>
+							<ul class="dropdown-menu">
+								<volist name="nav.child" id="n_1">
+									<li><a href="<eq name='n_1.type' value='6'>{$n_1['uri']}<else />{:U('/'.$n_1['name'])}</eq>">{$n_1.title}</a></li>
+								</volist>
+							</ul>
+					</li>
+                </volist>
+			</ul>
+		</div>
+	</div>
+</div>
+<notempty name="carousel">
+<div class="carousel slide jdt" id="myCarousel" data-ride="carousel" data-interval="3000">
+	<div class="carousel-inner">
+		<div class="item jdtbox1 active">
+			<a href="#"><img src="__IMAGES__/bg.jpg" alt="{$car.title}"></a>
+		</div>
+	</div>
+	<a href="#myCarousel" class="carousel-control left" data-slide="prev"></a>
+	<a href="#myCarousel" class="carousel-control right" data-slide="next"></a>
+</div>
+</notempty>
+<div class="container foot-top kj-navtabs">
+{$location}
+</div>

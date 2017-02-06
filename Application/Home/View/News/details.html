@@ -1,0 +1,24 @@
+<include file="Common:header1"/>
+<div class="info news-con">
+    <div class="container">
+        <div class="contentA">
+            <h1 class="news-title">{$article.title}</h1>
+			<hr />
+            <div class="news-info">
+                <strong class="persent">{$article.column}</strong>
+                <span class="time"><i class="glyphicon glyphicon-calendar"></i>&nbsp;{$article.create_time|date='Y-m-d',###}</span>
+				<span class="nesw-num" style="padding-left:10px;"><i class="glyphicon glyphicon-eye-open"></i>&nbsp;{$article.hits}</span>
+				<span class="nesw-num" style="padding-left:10px;"><i class="glyphicon glyphicon-user"></i>&nbsp;{$article.author|default="官方发布"}</span>
+				<eq name="site.is_shard" value="0"><div class="pull-right">分享到:{$site.shard|htmlspecialchars_decode}</div></eq>
+            </div>
+            <div class="detail_cont">
+                {$article.content|htmlspecialchars_decode}	
+            </div>
+            <div class="news_catalog">
+                <p><notempty name="prev"><a href="{:U('/detail/'.$prev['id'])}">下一篇 {$prev.title}</a><else /><a>下一篇 没有了</a></notempty></p>
+                <p><notempty name="next"><a href="{:U('/detail/'.$next['id'])}">下一篇 {$next.title}</a><else /><a>下一篇 没有了</a></notempty></p>
+            </div>
+        </div>
+    </div>
+</div>
+<include file="Common:footer"/>

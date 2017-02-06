@@ -1,0 +1,109 @@
+<include file="Common:header"/>
+<div class="info news">
+    <div class="container">
+        <div class="row pin">
+            <include file="Common:nav"/>
+            <div class="col-md-10 col-sm-9 col-xs-12 company-top pull-right">
+                <notempty name="list">
+                    <form class="form-horizontal" id="form1" role="form" action="__URL__/addform" method="post" autocomplete="off">
+                        <volist name="list" id="vo">
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">{$vo.title}</label>
+                                <div class="col-sm-4">
+                                   <eq name="vo.type" value="1">
+                                       <input type="<eq name='vo.type' value='1'>text</eq><eq name='vo.type' value='2'>number</eq><eq name='vo.type' value='3'>text</eq>" name="{$vo.name}" placeholder="<notempty name="vo.tooltips">{$vo.tooltips}<else />{$vo.title}</notempty>" class="form-control" autocomplete="off">
+                                   </eq>
+                                   <eq name="vo.type" value="4">
+                                        <volist name="vo.items" id="ra">
+                                            <div class="radio-inline">
+                                                <label class="" style="font-weight:normal;">
+                                                    <input type="radio" value="{$key}" name="{$vo.name|trim}" <eq name="key" value="0">checked="checked"</eq>>{$ra}
+                                                </label>
+                                            </div>
+                                        </volist>
+                                   </eq>
+                                   <eq name="vo.type" value="5">
+                                        <volist name="vo.items" id="ck">
+                                            <div class="checkbox-inline">
+                                                <label class="" style="font-weight:normal;">
+                                                    <input type="checkbox" value="{$ck}"name="{$vo.name|trim}[]">{$ck}
+                                                </label>
+                                            </div>
+                                        </volist>
+                                   </eq>
+                                   <eq name="vo.type" value="6">
+                                       <textarea  class="form-control" name="{$vo.name|trim}" placeholder="<notempty name="vo.tooltips">{$vo.tooltips}<else />{$vo.title}</notempty>" rows="5"></textarea>
+                                   </eq>
+                                   <!-- <notempty name="vo.tooltips">
+                                       <div class="text-danger">*{$vo.tooltips}</div>
+                                   </notempty> -->
+                                </div>
+                            </div>
+                        </volist>
+                        <input type="hidden" name="m" value="{$Think.get.id}">
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                              <button type="submit" class="btn btn-info">提交</button>
+                            </div>
+                        </div>
+                    </form>
+                    <script type="text/javascript">
+                        $(function(){
+                            $("#form1").validate({
+                                rules:{
+                                    <volist name="list" id="vo">
+                                        {$vo.name}:{
+                                            <eq name='vo.requird' value='1'>required:true</eq>
+                                        <eq name='vo.connect' value='1'>,isPhone:true</eq> 
+                                        <eq name='vo.email' value='1'>,email:true</eq>
+                                        <eq name='vo.url' value='1'>,url:true</eq>
+                                        <eq name='vo.type' value='2'>,number:true</eq> 
+                                        <eq name='vo.type' value='3'>,date:true</eq>
+                    },
+                                    </volist>              
+                                },
+                                messages:{
+                                    <volist name="list" id="vo">
+                                        {$vo.name}:{
+                                            <eq name='vo.requird' value='1'>required:"请填写{$vo.title}"</eq>
+                                        <eq name='vo.connect' value='1'>,isPhone:"手机\/固话号码不正确"</eq> 
+                                        <eq name='vo.email' value='1'>,email:"电子邮箱格式不正确"</eq>
+                                        <eq name='vo.url' value='1'>,url:"网址格式不正确"</eq>
+                                        <eq name='vo.type' value='2'>,number:"请填写数字"</eq> 
+                                        <eq name='vo.type' value='3'>,date:"请填写正确的日期格式"</eq>
+                    },
+                                </volist>                      
+                                }
+                            });
+
+                            $('#form1').submit(function(e){
+                                e.preventDefault();
+                                if($('#form1').valid()){
+                                    var index = layer.load(2, {
+                                        shade: [0.4,'#000'] //0.1透明度的白色背景
+                                    });
+                                    $.post($('#form1').attr('action'),$('#form1').serialize(),function (data) {
+                                        if(data.status==1){
+                                            layer.closeAll();
+                                            layer.alert(data.msg,{icon:6,end:function () {
+                                                $('#form1')[0].reset();
+                                            }});
+                                        }else {
+                                            layer.alert(data.msg,{icon:5});
+                                        }
+                                    });
+                                }
+                            });
+                        });
+                    </script>
+                    <css file="__PLUG__/jquery.validate/jquery.validate.css"/>
+                    <js file="__PLUG__/jquery.validate/jquery.metadata.js"/>
+                    <js file="__PLUG__/jquery.validate/jquery.validate.min.js"/>
+                    <js file="__PLUG__/jquery.validate/jQuery.Validate.message_cn.js"/>
+                    <js file="__PLUG__/jquery.validate/my.rules.js"/> 
+                </notempty>
+            </div>
+        </div>
+    </div>
+</div>
+<include file="Common:footer"/>

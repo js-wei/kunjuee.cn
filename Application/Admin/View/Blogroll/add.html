@@ -1,0 +1,288 @@
+<include file="Common:header"/>
+<!--BEGIN FORM STYLE-->
+<link rel="stylesheet" href="__PLUG__/Uploadify/uploadify.css" />
+<script type="text/javascript" src="__PLUG__/Uploadify/jquery.uploadify.min.js"></script>
+<!--END FORM STYLE-->
+<!-- BEGIN CONTAINER -->
+<div class="page-container">
+    <!-- BEGIN SIDEBAR -->
+    <include file="Common:nav"/>
+    <!-- END SIDEBAR -->
+    <!-- BEGIN PAGE -->
+    <div class="page-content fill-content">
+        <!-- BEGIN PAGE CONTAINER-->
+        <div class="container-fluid">
+            <!-- BEGIN PAGE HEADER-->
+            <div class="row-fluid">
+                <div class="span12">
+                    <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+                    <h3 class="page-title">
+                        Dashboard <small>statistics and more</small>
+                    </h3>
+                    <ul class="breadcrumb">
+                        <li>
+                            <i class="icon-home"></i>
+                            <a href="{:U('Index/index')}">首页</a>
+                            <i class="icon-angle-right"></i>
+                        </li>
+                        <li>
+                            <a href="__URL__/index?id={$Think.get.id}">{$breadcrumb}</a>
+                        </li>
+                        <li class="pull-right no-text-shadow">
+                            <div id="dashboard-report-range" class="dashboard-date-range tooltips no-tooltip-on-touch-device responsive"
+                                 data-tablet="" data-desktop="tooltips" data-placement="top" data-original-title="Change dashboard date range">
+                                <i class="icon-calendar"></i>
+                                <span></span>
+                                <i class="icon-angle-down"></i>
+                            </div>
+                        </li>
+                    </ul>
+                    <!-- END PAGE TITLE & BREADCRUMB-->
+                </div>
+            </div>
+            <!-- END PAGE HEADER-->
+            <!--BEGIN PAGER FORM-->
+            <div class="row-fluid">
+                <div class="span12">
+                    <div class="portlet box purple">
+                        <div class="portlet-title">
+                            <div class="caption"><i class="icon-reorder"></i>{$model.name|default='添加友情链接'}</div>
+                            <div class="tools">
+                                <a href="javascript:;" class="collapse"></a>
+                                <a href="#portlet-config" data-toggle="modal" class="config"></a>
+                                <a href="javascript:;" class="reload" data-role="__METRONIC_IMG__/fancybox_loading.gif" data-form="form_sample_1" data-reset="1"></a>
+                                <a href="javascript:;" class="remove"></a>
+                            </div>
+                        </div>
+                        <div class="portlet-body form">
+                            <!-- BEGIN FORM-->
+                            <form action="__URL__/add_carousel" method="post" id="form_sample_4" class="form-horizontal" novalidate="novalidate"  enctype="multipart/form-data">
+                                <div class="alert alert-error hide">
+                                    <button class="close" data-dismiss="alert"></button>
+                                    请填写完表单在提交
+                                </div>
+                                <div class="alert alert-success hide">
+                                    <button class="close" data-dismiss="alert"></button>
+                                    请填写完表单完成
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">标题<span class="required">*</span></label>
+                                    <div class="controls">
+                                        <input type="text" name="title" id="control-name" data-required="1" class="span4 m-wrap" placeholder="标题" value="{$article.title}">
+                                        <input type="hidden" value="{$Think.get.p}" name="p">
+                                        <input type="hidden" value="{$article.id}" name="id">
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">网址<span class="required">*</span></label>
+                                    <div class="controls">
+                                        <input type="url" name="url" class="span4 m-wrap" placeholder="网址" value="{$article.url}">
+                                        <input type="hidden" value="{$Think.get.p}" name="p">
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">说明</label>
+                                    <div class="controls">
+                                        <textarea name="description" class="span4 m-wrap" placeholder="说明">{$article.description}</textarea>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">LOGO</label>
+                                    <div class="controls">
+                                        <div>
+                                            <div style="float:left; margin-top:8px;"><input type="button" name="fileImg" id="fileImg" size="16" value="上传" class="table_btn"/></div>
+                                            <div class="btn mini blue" onclick="imgView('master');return false;" id="img_b"><i class="icon-zoom-in"></i></div>
+                                            <div  class="btn mini red" onclick="noMasterImg()"><i class=" icon-trash" style="cursor:pointer;display:block" ></i></div>
+                                            <div style="clear:both;"></div>
+                                        </div>
+                                        <div>
+                                            <notempty name="article.logo">
+                                                <img src="{$article.logo}" id="images_preview" width="380" height="auto">
+                                                <input type="hidden" value="{$article.logo}" name="logo" id="reply_img">
+                                                <else />
+                                                <img src="" id="images_preview" width="380" height="auto" style="display:none;">
+                                                <input type="hidden" name="logo" id="reply_img">
+                                            </notempty>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">排序</label>
+                                    <div class="controls">
+                                        <input type="text" name="sort" value="{$article.sort|default='100'}" placeholder="控制器排序"/>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+									<label class="control-label">状态</label>
+									<div class="controls">
+										<label class="radio">
+											<input type="radio" name="status"  value="0" <eq name="article.status" value="0">checked<else /> checked="checked"</eq> >启用
+										</label>
+										<label class="radio">
+											<input type="radio" name="status"  value="1" <eq name="article.status" value="1">checked</eq>>禁用
+										</label>  
+									</div>
+								</div>
+                                <div class="form-actions">
+                                    <button type="submit" class="btn purple">提交</button>
+                                    <button type="button" class="btn" onclick="window.history.go(-1);">返回</button>
+                                </div>
+                            </form>
+                            <!-- END FORM-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--END PAGER FORM-->
+        </div>
+        <!-- END PAGE CONTAINER-->
+    </div>
+    <!-- END PAGE -->
+</div>
+<!-- END CONTAINER -->
+<!-- BEGIN PAGE LEVEL PLUGINS -->
+<script type="text/javascript" src="__METRONIC_JS__/jquery.validate.min.js"></script>
+<script type="text/javascript" src="__METRONIC_JS__/additional-methods.min.js"></script>
+<script type="text/javascript" src="__METRONIC_JS__/select2.min.js"></script>
+<script type="text/javascript" src="__METRONIC_JS__/chosen.jquery.min.js"></script>
+<!-- END PAGE LEVEL PLUGINS -->
+<!-- BEGIN PAGE LEVEL STYLES -->
+<script type="text/javascript" src="__METRONIC_JS__/form-validation.js"></script>
+<script type="text/javascript" src="__METRONIC_JS__/form-checked.js"></script>
+<script type="text/javascript">
+    $(function(){
+        $('#form_sample_4').validate({
+            errorElement: 'span', //default input error message container
+            errorClass: 'help-inline', // default input error message class
+            focusInvalid: false, // do not focus the last invalid input
+            ignore: "",
+            rules: {
+                title: {
+                    required: true
+                },
+                url:{
+                    required:true,
+                    url:true
+                }
+            },
+            messages: { // custom messages for radio buttons and checkboxes
+                title: {
+                    required: "字段不能为空"
+                },
+                url: {
+                    required: "字段不能为空",
+                    url:'格式不正确'
+                }
+            },
+            highlight: function (element) { // hightlight error inputs
+                $(element)
+                        .closest('.help-inline').removeClass('ok'); // display OK icon
+                $(element)
+                        .closest('.control-group').removeClass('success').addClass('error'); // set error class to the control group
+            },
+
+            unhighlight: function (element) { // revert the change dony by hightlight
+                $(element)
+                        .closest('.control-group').removeClass('error'); // set error class to the control group
+            },
+
+            success: function (label) {
+                label
+                        .addClass('valid').addClass('help-inline ok') // mark the current input as valid and display OK icon
+                        .closest('.control-group').removeClass('error').addClass('success'); // set success class to the control group
+            }
+        });
+
+        $('#form_sample_4').submit(function(e){
+            e.preventDefault();
+            if($('#form_sample_4').valid()){
+            	var index = layer.load(2, {
+		            shade: [0.4,'#000'] //0.1透明度的白色背景
+		        });
+                $.post($('#form_sample_4').attr('action'),$('#form_sample_4').serialize(),function (data) {
+			        if(data.status==1){
+	                    	layer.closeAll();
+	                        layer.alert(data.msg,{icon:6,end:function () {
+	                            location.href = data.redirect;
+	                        }});
+	                    }else {
+	                        layer.alert(data.msg,{icon:5});
+	                    }
+	                });
+            }
+        });
+    });
+    function imgView(pic_url){
+        if(pic_url == 'master'){
+            pic_url = $('#reply_img').val();
+        }
+        if(pic_url==''){
+            layer.alert('你还没有上传图片',{icon:5});
+            return false;
+        }
+        layer.open({
+            type: 1,
+            title: '查看图片',
+            skin: 'layui-layer-rim', //加上边框
+            area: ['500px', '400px'], //宽高
+            content: "<div style='max-width:500px; max-height:400px; overflow:auto;'><img style='max-width:500px; max-height:400px; overflow:auto;' src='"+pic_url+"'  /></div>"
+        });
+    }
+
+    //照片
+    $("#fileImg").uploadify({
+        fileTypeDesc    : '图片文件',
+        fileTypeExts    : '*.png;*.jpg;*.jpeg;*.gif;',
+        buttonText      : '选择图片',
+        buttonClass     : 'upload_button',
+        swf             : '__PLUG__/Uploadify/uploadify.swf',
+        uploader        : "{:U('Uploadify/uploadImg')}",
+        multi           : false,
+        onUploadSuccess : function(file, data, response) {
+            $("#reply_img").val(data);
+            $("#images_preview").attr('src',data);
+            $('#images_preview').show();
+            $('#img_b').show();
+            $('#img_c').show();
+        }
+    });
+    function noMasterImg(){
+        $src = $("#images_preview").attr('src');
+        if($src==''){
+            layer.alert('您好没有上传图片',{icon:5});
+            return false;
+        }
+        $.post("{:U('Uploadify/delmg')}",{src:$src},function(data){
+            if(data.status==1){
+                layer.msg(data.msg,{icon:1});
+                $("#reply_img").val('');
+                $('#images_preview').attr('src','');
+                $('#img_c').hide();
+                $('#images_preview').hide();
+            }else{
+                layer.alert(data.msg,{icon:5});
+            }
+        });
+    }
+    function deleteImage(obj) {
+        var url = $(obj).attr('data-path');
+        if(url==''){
+            layer.alert('删除图片不存在',{icon:2});
+        }
+        var index = layer.load(2, {
+            shade: [0.4,'#000'] //0.1透明度的白色背景
+        });
+        $.post("{:U('Uploadify/delmg')}",{src:url},function(data){
+            if(data.status==1){
+                layer.msg(data.msg,{icon:1,end:function () {
+                    layer.closeAll();
+                    $(obj).parent('span.imageDiv').remove();
+                }});
+            }else{
+                layer.msg(data.msg,{icon:5});
+            }
+        });
+    }
+</script>
+<!-- END PAGE LEVEL STYLES -->
+<include file="Common:footer"/>

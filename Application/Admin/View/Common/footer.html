@@ -1,0 +1,180 @@
+<!-- BEGIN FOOTER -->
+	<div class="footer">
+		<div class="footer-inner">
+			{$config.copyright|default='2013 &copy; Metronic by keenthemes.'}
+		</div>
+		<div class="footer-tools">
+			<span class="go-top">
+				<i class="icon-angle-up"></i>
+			</span>
+		</div>
+	</div>
+	<!-- END FOOTER -->
+	<!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
+	<!-- BEGIN CORE PLUGINS -->
+	<script src="__METRONIC_JS__/jquery-migrate-1.2.1.min.js" type="text/javascript"></script>
+	<!-- IMPORTANT! Load jquery-ui-1.10.1.custom.min.js before bootstrap.min.js to fix bootstrap tooltip conflict with jquery ui tooltip -->
+	<script src="__METRONIC_JS__/jquery-ui-1.10.1.custom.min.js" type="text/javascript"></script>      
+	<script src="__METRONIC_JS__/bootstrap.min.js" type="text/javascript"></script>
+    <!--[if lt IE 9]>
+    <script src="__METRONIC_JS__/excanvas.min.js"></script>
+    <script src="__METRONIC_JS__/respond.min.js"></script>
+    <![endif]-->
+    <script src="__METRONIC_JS__/jquery.slimscroll.min.js" type="text/javascript"></script>
+    <script src="__METRONIC_JS__/jquery.blockui.min.js" type="text/javascript"></script>
+    <script src="__METRONIC_JS__/jquery.uniform.min.js" type="text/javascript" ></script>
+    <!-- END CORE PLUGINS -->
+    <!-- BEGIN PAGE LEVEL SCRIPTS -->
+	<script src="__METRONIC_JS__/app.js" type="text/javascript"></script>
+    <script src="__PLUG__/layer/layer.js" type="text/javascript"></script>
+	<!-- END PAGE LEVEL SCRIPTS -->
+
+	<script type="text/javascript">
+		$(function(){
+			App.init(); // init layout and core plugins
+			$us = $u = window.location.pathname;
+
+            if($us.indexOf('?')<0){
+                $u1 = $us.replace('{$rd}/','').split('/');
+                $controller =$u1[0];
+                $action = $u1[1];
+                $ii = $us.indexOf($action)+$action.length+1;
+                $temp = $us.substring($ii).split('/');
+                $tempArr =new Array();
+                if($temp.length>2){
+                    $str = '';
+                    for (var i = 0; i <=$temp.length/2; i+=2){
+                        $str +='&'+$temp[i]+'='+$temp[i+1];
+                        $tempArr[i]=$temp[i]+"_"+$temp[i+1];
+                    }
+                    $u = '{$rd}/'+$controller+'/'+$action+'?'+$str.substring(1);
+                   
+                }     
+            }
+           
+			$u = $u.replace('{$rd}/','').split('/');
+            $controller =$u[0];
+            $action = $u[1];
+
+			$r = $controller+"/"+$action;
+            $r = $r.toLowerCase();
+            $id = getQueryString('id');
+            if($id==null){
+                for (var i = 0; i < $tempArr.length; i++) {
+                    if($tempArr[i].indexOf('id')>-1){
+                        $tempstr =  $tempArr[i].split('_');
+                        $id =$tempstr[1];
+                        break;
+                    }
+                }
+            }
+            //更改高亮地址
+            if($action=='add' || $action=='del' || $action=='edit' || $action=='check'|| $action=='search'){
+                $r = $controller+"/index";
+                $r = $r.toLowerCase();
+            }
+
+            //循环高亮
+            $('li.nav-item').each(function(e){
+                $this = $(this);
+                $c = $this.children('a').attr('href');
+               
+                if($c.indexOf($r) > 0 || $c.indexOf('?') > 0){
+                    if($c.indexOf('?') > 0){
+                        $t = $c.split('=');
+                        if($t[1]==$id){
+                            $this.addClass('active');
+                            $p = $this.parent('ul');
+                            $p.show();
+                            $p.parent('li').addClass('start active open');
+                        }
+                        
+                    }else{
+                        $this.addClass('active');
+                        $p = $this.parent('ul');
+                        $p.show();
+                        $p.parent('li').addClass('start active open');
+                    }
+                   
+                }
+            });
+            //退出登陆
+            $(document).keypress(function(e){
+            	$code = e.keyCode | e.which;
+                // if($code==32){
+                //     window.location.href='{:U("Login/logout")}';
+                //     return false;
+                // }
+            });
+            //提交搜索
+            $(document).keypress(function(e){
+                $code = e.keyCode | e.which;
+                if($code==13){
+                    $('#form-search').submit();
+                    return false;
+                }
+            });
+            $('#change-lang li').click(function(e){
+                e.preventDefault();
+                $uri = $(this).children('a').attr('href');
+                $.post('__SELF__',{l:$uri},function(d){
+                    window.location.reload();
+                });
+            });
+		});
+        //获取url参数
+        function GetRequest() {
+            var url = location.search; //获取url中"?"符后的字串
+            var theRequest = new Object();
+            if (url.indexOf("?") != -1) {
+                var str = url.substr(1);
+                strs = str.split("&");
+                for(var i = 0; i < strs.length; i ++) {
+                    theRequest[strs[i].split("=")[0]]=unescape(strs[i].split("=")[1]);
+                }
+            }
+            return theRequest;
+        }
+        $('.btn-del').click(function(e){
+            e.preventDefault();
+            var url = $(this).attr('data-role');
+            layer.confirm('你确定要删除？删除后不可恢复', {
+                btn: ['确定','不了'] //按钮
+            }, function(){
+                //alert(url);
+                window.location.href=url;
+            });
+        });
+        /**
+         * 获取url参数
+         * @param name   url地址
+         * @returns {*} 获取参数
+         */
+        function getQueryString(name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) return unescape(r[2]); return null;
+        }
+
+        $('#btn-enable,#btn-forbidden,#btn-delete').click(function(e){
+            e.preventDefault();
+            $t = $(this).attr('data-role');
+            $q='';
+            $('.checkboxes').each(function(){
+                if($(this).attr('checked')=='checked'){
+                    $q += ','+$(this).val();
+                }
+            });
+            $q = $q.substr(1);
+            if($q!=''){
+                $.post('__URL__/status',{k:$q,t:$t},function(data){
+                    window.location.reload();
+                });
+            }else{
+                $('#alert-info-item').text('请选择需要操作项');
+                $('.alert-info').show();
+            }
+        });
+	</script>
+</body>
+</html>

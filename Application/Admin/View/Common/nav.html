@@ -1,0 +1,167 @@
+<div class="page-sidebar nav-collapse collapse">
+	<!-- BEGIN SIDEBAR MENU -->        
+	<ul class="page-sidebar-menu">
+		<li>
+			<div class="sidebar-toggler hidden-phone"></div>
+		</li>
+		<li class="<eq name='control' value='index'>start active</eq>">
+			<a href="{$site.url}" target="_blank">
+				<i class="icon-home"></i> 
+				<span class="title">网站首页</span>
+				<span class="selected"></span>
+			</a>
+		</li>
+		<volist name="nav" id="volt">
+			<li class="nav">
+				<a href="javascript:;">
+                    <notempty name="volt.ico">
+                        <i class="{$volt.ico}"></i>
+                        <else/>
+                        <i class="icon-folder-open"></i>
+                    </notempty>
+                    <span class="title">{$volt.name}</span>
+                    <span class="arrow"></span>
+				</a>
+				<notempty name="volt.child">
+						<ul class="sub-menu">
+							<volist name="volt.child" id="volt1">
+								<notempty name="volt1.child">
+									<ul class="sub-menu">
+										<li  class="nav-item">
+											<a href="javascript:;">
+												<notempty name="volt1.ico">
+													<i class="{$volt1.ico}"></i>
+													<else/>
+													<i class="icon-folder-open"></i>
+												</notempty>
+												<span class="title">{$volt1.name}</span>
+												<span class="arrow "></span>
+											</a>
+											<volost name="volt1.child" id="volt2">
+												<li  class="nav-item-sub  <php>if(strtolower($volt2['title'])==strtolower(ACTION_NAME)){echo 'active';}</php>">
+													<a href="#">
+														<notempty name="volt2.ico">
+															<i class="{$volt2.ico}"></i>
+															<else/>
+															<i class="icon-folder-open"></i>
+														</notempty>
+														{$volt2.name}
+													</a>
+												</li>
+											</volost>
+										</li>
+									</ul>
+									<else/>
+									<li  class="nav-item <php>if(strtolower($volt1['title'])==strtolower(ACTION_NAME) && $_GET['id']=='' && strtolower($volt['title'])==strtolower(CONTROLLER_NAME)){echo 'active';}</php> ">
+										<a href="{$rd}/{$volt.title|strtolower}/{$volt1.title|strtolower}">
+											<notempty name="volt1.ico">
+												<i class="{$volt1.ico}"></i>
+												<else/>
+												<i class="icon-folder-open"></i>
+											</notempty>
+											{$volt1.name}
+										</a>
+									</li>
+								</notempty>
+							</volist>
+						</ul>
+					<else/>
+						<li  class="nav">
+							<a href="{$uri}/{$volt.title|strtolower}">
+								<notempty name="volt.ico">
+									<i class="{$volt.ico}"></i>
+									<else/>
+									<i class="icon-folder-open"></i>
+								</notempty>
+								{$volt.name}
+							</a>
+						</li>	
+				</notempty>
+			</li>
+		</volist>
+
+		<li  class="nav">
+			<volist name="articleList" id="volt">
+				<notempty name="volt.child">
+					<li class="nav">
+						<a href="javascript:;">
+							<notempty name="volt.ico">
+								<i class="{$volt.ico}"></i>
+								<else/>
+								<i class="icon-won"></i>
+							</notempty>
+							<span class="title">{$volt.title}</span>
+							<span class="arrow"></span>
+						</a>
+						<ul class="sub-menu">
+							<volist name="volt.child" id="volt1">
+								<notempty name="volt1.child">
+									<ul class="sub-menu">
+										<li  class="nav-item">
+											<a href="javascript:;">
+												<notempty name="volt1.ico">
+													<i class="{$volt1.ico}"></i>
+													<else/>
+													<i class="icon-won"></i>
+												</notempty>
+												<span class="title">{$volt1.title}</span>
+												<span class="arrow "></span>
+											</a>
+											<volost name="volt1.child" id="volt2">
+												<li  class="nav-item-sub">
+													<a href="{$rd}/Article/index?id={$volt2.id}">
+														<notempty name="volt2.ico">
+															<i class="{$volt2.ico}"></i>
+															<else/>
+															<i class="icon-won"></i>
+														</notempty>
+														{$volt2.title}
+													</a>
+												</li>
+											</volost>
+										</li>
+									</ul>
+									<else/>
+									<li  class="nav-item <eq name='volt1.id' value='$Think.get.id'>active</eq>">
+										<a href="<eq name='volt1.type' value='5'>{:U('form/index?id='.$volt1['id'])}</eq><eq name='volt1.type' value='3'>{:U('Single/index?id='.$volt1['id'])}</eq><eq name='volt1.type' value='1'>{:U('Article/index?id='.$volt1['id'])}</eq>">
+											<notempty name="volt1.ico">
+												<i class="{$volt1.ico}"></i>
+												<else/>
+												<i class="icon-won"></i>
+											</notempty>
+											{$volt1.title}
+										</a>
+									</li>
+								</notempty>
+							</volist>
+						</ul>
+					</li>
+				<else/>
+				<li  class="nav <eq name='volt.id' value='$Think.get.id'>active</eq> ">
+					<a href="<eq name='volt.type' value='5'>{:U('form/index?id='.$volt['id'])}</eq><eq name='volt.type' value='3'>{:U('Single/index?id='.$volt['id'])}</eq><eq name='volt.type' value='1'>{:U('Article/index?id='.$volt['id'])}</eq>">
+						<notempty name="volt.ico">
+							<i class="{$volt.ico}"></i>
+							<else/>
+							<i class="icon-won"></i>
+						</notempty>
+						{$volt.title}
+					</a>
+				</li>
+				</notempty>
+			</volist>
+		</li>
+	</ul>
+	<!-- END SIDEBAR MENU -->
+  </div>
+<script type="text/javascript">
+	if($('li.active').text()===''){
+		$('li.nav-item').each(function(){
+			controller = controller.toLowerCase();
+			if($(this).find('a').attr('href').indexOf(controller)>-1){
+				$(this).addClass('active');
+				$(this).parent().parent().addClass('open');
+			}
+		});
+	}
+	$('li.active').parent().parent().addClass('active open');
+</script>

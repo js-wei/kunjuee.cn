@@ -1,0 +1,9 @@
+<div class="col-md-2 hidden-sm hidden-xs" id="myScrollspy">
+    <ul class="nav nav-tabs nav-stacked affix-top">
+        <volist name="navbar" id="child">
+            <li <eq name="current['name']" value="$child['name']">class="active"</eq> >
+            <a  href="{:U('/'.$child['name'])}">{$child.title}</a>
+            </li>
+        </volist>
+    </ul>
+</div>

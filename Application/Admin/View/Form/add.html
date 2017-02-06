@@ -1,0 +1,256 @@
+<include file="Common:header"/>
+<!--END FORM STYLE-->
+<!-- BEGIN CONTAINER -->
+<div class="page-container">
+    <!-- BEGIN SIDEBAR -->
+    <include file="Common:nav"/>
+    <!-- END SIDEBAR -->
+    <!-- BEGIN PAGE -->
+    <div class="page-content fill-content">
+        <!-- BEGIN PAGE CONTAINER-->
+        <div class="container-fluid">
+            <!-- BEGIN PAGE HEADER-->
+            <div class="row-fluid">
+                <div class="span12">
+                    <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+                    <h3 class="page-title">
+                        Dashboard <small>statistics and more</small>
+                    </h3>
+                    <ul class="breadcrumb">
+                        <li>
+                            <i class="icon-home"></i>
+                            <a href="{:U('Index/index')}">首页</a>
+                            <i class="icon-angle-right"></i>
+                        </li>
+                        <notempty name="breadcrumb">
+                            {$breadcrumb}
+                            <else/>
+                            <li><a href="#">Dashboard</a></li>
+                        </notempty>
+                        <li class="pull-right no-text-shadow">
+                            <div id="dashboard-report-range" class="dashboard-date-range tooltips no-tooltip-on-touch-device responsive"
+                                 data-tablet="" data-desktop="tooltips" data-placement="top" data-original-title="Change dashboard date range">
+                                <i class="icon-calendar"></i>
+                                <span></span>
+                                <i class="icon-angle-down"></i>
+                            </div>
+                        </li>
+                    </ul>
+                    <!-- END PAGE TITLE & BREADCRUMB-->
+                </div>
+            </div>
+            <!-- END PAGE HEADER-->
+            <!--BEGIN PAGER FORM-->
+            <div class="row-fluid">
+                <div class="span12">
+                    <div class="portlet box purple">
+                        <div class="portlet-title">
+                            <div class="caption"><i class="icon-reorder"></i>{$model.name|default='基本配置'}</div>
+                            <div class="tools">
+                                <a href="javascript:;" class="collapse"></a>
+                                <a href="#portlet-config" data-toggle="modal" class="config"></a>
+                                <a href="javascript:;" class="reload" data-role="__METRONIC_IMG__/fancybox_loading.gif" data-form="form_sample_1" data-reset="1"></a>
+                                <a href="javascript:;" class="remove"></a>
+                            </div>
+                        </div>
+                        <div class="portlet-body form">
+                            <!-- BEGIN FORM-->
+                            <form action="__URL__/formhandler" method="post" id="form_sample_3" class="form-horizontal" novalidate="novalidate" enctype="multipart/form-data">
+                                <div class="alert alert-error hide">
+                                    <button class="close" data-dismiss="alert"></button>
+                                    请将必填的填写完整
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">名称</label>
+                                    <div class="controls">
+                                        <input type="text" name="title" class="m-wrap"  value="{$article.title}" placeholder="名称">
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">英文名</label>
+                                    <div class="controls">
+                                        <input type="text" name="name" class="m-wrap"  value="{$article.name}" placeholder="英文名">
+                                        <input type="hidden" name="fid" value="{$Think.get.id}">
+                                        <input type="hidden" name="id" value="{$Think.get.aid}">
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">类型</label>
+                                    <div class="controls">
+                                       <select name="type">
+                                           <option value="0">--请选择类型--</option>
+                                           <option value="1" <eq name='article.type' value='1'>selected="selected"</eq>>字符串</option>
+                                           <option value="2" <eq name='article.type' value='2'>selected="selected"</eq>>数字</option>
+                                           <option value="3" <eq name='article.type' value='3'>selected="selected"</eq>>日期/时间</option>
+                                           <option value="4" <eq name='article.type' value='4'>selected="selected"</eq>>单选</option>
+                                           <option value="5" <eq name='article.type' value='5'>selected="selected"</eq>>多选</option>
+                                           <option value="6" <eq name='article.type' value='6'>selected="selected"</eq>>多行文本</option>
+                                       </select>
+                                    </div>
+                                </div>
+                                <eq name='article.type' value='4'>
+                                    <div class="control-group radio_box">
+                                        <label class="control-label">确认文本</label>
+                                        <div class="controls">
+                                            <input type="text" name="items[]" class="m-wrap"  value="{$article['items'][0]}" placeholder="确认文本">
+                                        </div>
+                                    </div>
+                                    <div class="control-group radio_box">
+                                        <label class="control-label">取消文本</label>
+                                        <div class="controls">
+                                            <input type="text" name="items[]" class="m-wrap"  value="{$article['items'][1]}" placeholder="取消文本">
+                                        </div>
+                                    </div>
+                                </eq>
+                                <eq name='article.type' value='5'>
+                                    <div class="control-group ckeck_box">
+                                        <label class="control-label">多选项目</label>
+                                        <div class="controls">    
+                                            <volist name="article['items']" id="vo">
+                                                <div class="m-wrap span2 item" data-id="{++$key}">
+                                                    <input type="text" name="items[]" class="m-wrap span11" value="{$vo}" placeholder="项目{$key}">
+                                                    <span class="close"></span> 
+                                                </div>
+                                            </volist>
+                                            <div class="m-wrap span2">        
+                                                <a class="btn red add-items">添加</a>   
+                                            </div>
+                                        </div>
+                                    </div>
+                                </eq>
+                                <div class="control-group">
+                                    <label class="control-label">验证格式</label>
+                                    <div class="controls">
+                                        <label class="radio">
+                                            <input type="checkbox" name="auth[requird]"  value="1"  <eq name="article.requird" value="1">checked</eq>>必填
+                                        </label>
+                                        <label class="radio">
+                                            <input type="checkbox" name="auth[connect]"  value="1"  <eq name="article.connect" value="1">checked</eq>>联系方式(手机/固话)格式
+                                        </label>
+                                        <label class="radio">
+                                            <input type="checkbox" name="auth[email]"  value="1"  <eq name="article.email" value="1">checked</eq>>邮箱格式
+                                        </label>
+                                        <label class="radio">
+                                            <input type="checkbox" name="auth[url]"  value="1"  <eq name="article.url" value="1">checked</eq>>网站地址
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">提示信息</label>
+                                    <div class="controls">
+                                        <input type="text" value="{$article.tooltips}" name="tooltips" placeholder="提示信息">
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">状态</label>
+                                    <div class="controls">
+                                        <label class="radio">
+                                            <input type="radio" name="status" <empty name="article.status">checked</empty> value="0"  <eq name="article.status" value="0">checked</eq> >开启
+                                        </label>
+                                        <label class="radio">
+                                            <input type="radio" name="status"   value="1" <eq name="article.status" value="1">checked</eq>>禁用
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-actions">
+                                    <button type="submit" class="btn purple">提交</button>
+                                    <button type="button" class="btn" onclick="window.history.go(-1);">返回</button>
+                                </div>
+                            </form>
+                            <!-- END FORM-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--END PAGER FORM-->
+        </div>
+        <!-- END PAGE CONTAINER-->
+    </div>
+    <!-- END PAGE -->
+</div>
+<script type="text/javascript">
+    $(function(){
+        $('form').submit(function(e){
+            e.preventDefault();
+            var index = layer.load(2,{
+                shade: [0.4,'#000'] //0.1透明度的白色背景
+            });
+            $.post($('form').attr('action'),$('form').serialize(),function(data){
+                layer.closeAll(index);
+                if(data.status==1){
+                    layer.alert(data.msg,{icon:6,end:function(){
+                        location.href = data.redirect;
+                    }});
+                }else {
+                    layer.alert(data.msg,{icon:5});
+                }
+            });
+        });
+
+        $('select[name="type"]').change(function(){
+            if($(this).val()==4){
+                var html = '<div class="control-group radio_box">'
+                        +'<label class="control-label">确认文本</label>'
+                        +'<div class="controls">'
+                            +'<input type="text" name="items[]" class="m-wrap"  value=""' 
+                            +'placeholder="确认文本">'
+                            +'<div class="text-error">*默认:是</div>'
+                        +'</div>'
+                    +'</div>'
+                    +'<div class="control-group radio_box">'
+                    +'    <label class="control-label">取消文本</label>'
+                    +'    <div class="controls">'
+                    +'        <input type="text" name="items[]" class="m-wrap"  value=""'
+                    +'placeholder="取消文本">'
+                    +'        <div class="text-error">*默认:否</div>'
+                    +'    </div>'
+                    +'</div>';
+                    $('div.ckeck_box').remove();
+                    $(this).parent().parent().after(html);
+            }else if($(this).val()==5){
+                var html='<div class="control-group ckeck_box">'
+                    +'<label class="control-label">多选项目</label>'
+                    +'<div class="controls">'
+                    +'    <div class="m-wrap span2 item" data-id="1">'
+                    +'        <input type="text" name="items[]" class="m-wrap span11"'  
+                    +'value="" placeholder="项目1">'
+                    +'        <span class="close"></span>'
+                    +'    </div>'
+                    +'    <div class="m-wrap span2 item" data-id="2">'
+                    +'        <input type="text" name="items[]" class="m-wrap span11" ' 
+                    +'value="" placeholder="项目2">'
+                    +'        <span class="close"></span>'
+                    +'    </div>'
+                    +'    <div class="m-wrap span2">'
+                    +'        <a class="btn red add-items">添加</a>'
+                    +'    </div>'
+                    +' </div>'
+                    +'</div>';
+                    $('div.radio_box').remove();
+                    $(this).parent().parent().after(html);
+            }else{
+                $('div.radio_box,div.ckeck_box').remove();
+            }
+        });
+        $('a.add-items').live('click',function(e){
+            e.preventDefault();
+            var index = $('div.item:last').attr('data-id')?$('div.item:last').attr('data-id'):0;
+            ++index; 
+            var html = ' <div class="m-wrap span2 item" data-id="'+index+'">'
+                        +'<input type="text" name="items[]" class="m-wrap span11" ' 
+                        +'value="" placeholder="项目'+index+'">'
+                        +'<span class="close"></span>'
+                    +'</div>';
+            if(index>1){
+                $('div.item:last').after(html);
+            }else{
+                $(this).parent().before(html);
+            }
+        });
+        $('span.close').live('click',function(){
+            $(this).parent().remove();
+        });
+    });
+</script>
+<!-- END CONTAINER -->
+<include file="Common:footer"/>
