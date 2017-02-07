@@ -6,6 +6,8 @@ defined('THINK_PATH') or exit();
 class Lists extends TagLib{
     protected $tags = array(
          'list' => array('attr' => 'id,model,field,limit,order,where,empty,date,attr','close' =>1),// attr 属性列表close 是否闭合（0 或者1 默认为1，表示闭合）
+         'atlas' => array('attr' => 'id,model,field,limit,order,where,empty,date,attr','close' =>1),
+         'atlas2' => array('attr' => 'id','close' =>1),
          'list2' => array('attr' => 'id,model,field,limit,order,where,empty,date,attr','close' =>1),
          'single' => array('attr' => 'id,model,field,where','close' =>1),
          'article' => array('attr' => 'id,field,where','close' =>1),
@@ -123,6 +125,70 @@ class Lists extends TagLib{
       $str .='<?php endforeach ?>';
       return $str;
     }
+
+	/**
+     * [_atlas 列表输出结果]
+     * @param  [type] $attr    [description]
+     * @param  [type] $content [description]
+     * @return [type]          [description]
+     */
+    public function _atlas ($attr,$content){
+      $model=!empty($attr['model'])?$attr['model']:'atlas';
+      $field=!empty($attr['field'])?$attr['field']:'*';
+      $date=!empty($attr['date'])?$attr['date']:'';
+      $limit=$attr['limit'];//参数$limit，可通过模板传入参数值
+      $order=$attr['order'];//$order$limit，可通过模板传入参数值
+      $where= $this->adjunct($attr);
+      $id=!empty($attr['id'])?$attr['id']:I('id');
+      $attr=!empty($attr['attr'])?$attr['attr']:'';
+
+      $id = $this->_get_child($id);
+
+      if(!empty($id)){
+          if(strrpos(',', $id )===false){//p(1);die;
+              if(!empty($where)){
+                if (strpos($where,'column_id')===false) { 
+                   $where.=' and column_id = '.$id;
+                }
+              }else{
+                 $where.=' column_id = '.$id;
+              } 
+          }else{ 
+            $reid=$this->_split_parama($where);
+            $where=$reid.",".$id;
+          }
+      }
+      $str='<?php ';
+      $str .= '$_list_news=M("'.$model.'")->field("'.$field.'")->where("'.$where.'")->limit('.$limit.')->order("'.$order.'")->select();';//查询语句 
+      $str .='$_column=M("Column")->find("'.$id.'");';      
+      $str .='$column=$_column; $key=0;';
+      $str .= 'foreach ($_list_news as $_list_value):';
+      //$str .= 'extract($_list_value);';
+      $str .= '$atlas=$_list_value;++$key;';
+      $str .= '?>';//自定义文章生成路径$url
+      $str .= $content;
+      $str .='<?php endforeach ?>';
+      return $str;
+    }
+	/**
+     * [_atlas2 列表输出结果]
+     * @param  [type] $attr    [description]
+     * @param  [type] $content [description]
+     * @return [type]          [description]
+     */
+    public function _atlas2 ($attr,$content){
+      $model=!empty($attr['model'])?$attr['model']:'atlas_content';
+      $where = '`fid`='.$attr['id'];
+      $str='<?php ';
+      $str .= '$_list_news=M("'.$model.'")->field("'.$field.'")->where("'.$where.'")->limit('.$limit.')->order("'.$order.'")->select();';//查询语句 
+      $str .= 'foreach ($_list_news as $_list_value):';
+      //$str .= 'extract($_list_value);';
+      $str .= '$atlas2=$_list_value;++$key;';
+      $str .= '?>';//自定义文章生成路径$url
+      $str .= $content;
+      $str .='<?php endforeach ?>';
+      return $str;
+    }
     /**
      * [_list2 文章列表返回数组]
      * @param  [type] $attr    [description]
@@ -130,7 +196,6 @@ class Lists extends TagLib{
      * @return [type]          [description]
      */
     public function _list2 ($attr,$content){
-    
       $model=!empty($attr['model'])?$attr['model']:'Article';
       $field=!empty($attr['field'])?$attr['field']:'*';
       $date=!empty($attr['date'])?$attr['date']:'';

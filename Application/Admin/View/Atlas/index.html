@@ -105,15 +105,15 @@
                         <volist name="arclist" id="vo">
                             <tr class="gradeX <php>if($key%2==0){echo 'odd';}else{echo 'even';}</php>">
                                 <td class=" sorting_1"><div class="checker"><span><input type="checkbox" class="checkboxes" value="{$vo.id}"></span></div></td>
-                                <td class="hidden-480">{++$key}</td>
-                                <td class=""><a href="__URL__/addatlas?id={$vo.id}">{$vo.title}</a></td>
+                                <td class="hidden-480">{$vo.id}</td>
+                                <td class=""><a href="__URL__/addatlas?aid={$vo.id}&cid={$Think.get.id}">{$vo.title}</a></td>
                                 <td class="hidden-480">{$vo.keywords}</td>
                                 <td class="hidden-480">{$vo.description}</td>
                                 <td class="hidden-480 "><eq name="vo.status" value="1"><label class="label label-error">禁用</label><else/><label class="label label-success">启用</label></eq></td>
                                 <td class="hidden-480">{$vo.date|date='Y-m-d h:i:s',###}</td>
                                 <td class="text text-center">
                                     <!-- <a href="__URL__/check?id={$vo.id}" class="btn mini">查看</a> -->
-                                    <a href="__URL__/add?aid={$vo.id}&id={$vo.column_id}&p={$Think.get.p}" class="btn blue mini">编辑</a>
+                                    <a href="__URL__/see?aid={$vo.id}" class="btn blue mini see">查看</a>
                                     <eq name="vo.status" value="0">
                                         <a href="__URL__/status?id={$vo.id}&t=forbidden&p={$Think.get.p}&ajax=0&cid={$Think.get.id}" class="btn black mini">禁用</a>
                                         <else/>
@@ -225,6 +225,15 @@
                     layer.alert(data.msg,{icon:5});
                 }
             });
+        });
+        
+        $('.see').on('click',function(e){
+        	e.preventDefault();
+        	$.getJSON($(this).attr('href'), function(json){
+				layer.photos({
+				    photos: json
+				});
+			});
         });
     });
 </script>

@@ -62,7 +62,7 @@
                             </div>
                             <div class="portlet-body form">
                                 <!-- BEGIN FORM-->
-                                <form action="__URL__/Insert" method="post" id="form_sample_3" class="form-horizontal" novalidate="novalidate"  enctype="multipart/form-data">
+                                <form action="__URL__/InsertAtlas" method="post" id="form_sample_3" class="form-horizontal" novalidate="novalidate"  enctype="multipart/form-data">
                                     <div class="alert alert-error hide">
                                         <button class="close" data-dismiss="alert"></button>
                                                                                请填写完表单在提交
@@ -75,36 +75,37 @@
                                         <label class="control-label">添加图片<span class="required">*</span></label>
                                         <div class="controls">
                                         	<input type="button" id="J_selectImage" value="批量上传" />
-                                            <div id="J_imageView" style="padding-left: 93px;">
-							                    <notempty name="info.driver_image">
-							                        <volist name="info.driver_image" id="vo">
-														<span class="imageDiv">
-															<img src="{$vo}" width="100" data-role=""><img src="/Public/images/ldx.png" class="removeImage" onclick="removeImage(this)">
-															<input type="hidden" name="driver_image[]" value="{$vo}">
+                                            <div id="JimageView" style="padding-left:0px;margin-top:10px;">
+							                    <notempty name="info">
+							                        <volist name="info" id="vo">
+														<span style="width:220px;display:inline-block;position:relative;height:410px;overflow:hidden;margin-left:2px;" class="iamgeDiv" data-role="{$vo.id}">
+															<img src="{$vo.image}" data-role="{$vo.id}" style="margin:0 auto; width:125px;height:110px">
+															<a href="javascript:void(0);" style="position:absolute;color:#777;right:15px;" onclick="removeImage(this)"><i class="icon-remove"></i></a>
+															<input type="hidden" name="image[{$vo.id}][image]" value="{$vo.image}">
+															<div style="margin-top:10px;width:180px;">
+																<input type="text" name="image[{$vo.id}][title]" value="{$vo.title}" placeholder="图片标题" />
+															</div>
+															<div style="margin-top:10px;width:180px;">
+																<textarea name="image[{$vo.id}][description]" rows="4" placeholder="图片说明">{$vo.description}</textarea>
+															</div>
+															<div style="margin-top:10px;width:180px;">
+																<input type="text" name="image[{$vo.id}][sort]" value="{$vo.sort|default='100'}" placeholder="排序"/>
+															</div>
+															<div style="margin-top:10px;width:180px;">
+																<label class="radio-inline inline-width">
+					                                                <input type="radio" name="image[{$vo.id}][status]"  value="0" <eq name="vo.status" value="0">checked<else /> checked="checked"</eq> >启用
+					                                            </label>
+					                                            <label class="radio-inline inline-width">
+					                                                <input type="radio" name="image[{$vo.id}][status]"  value="1" <eq name="vo.status" value="1">checked</eq>>禁用
+					                                            </label>
+															</div>
 														</span>
 							                        </volist>
 							                    </notempty>
 							                </div>
-                                            <input type="hidden" value="{$Think.get.id}" name="cid">
+                                            <input type="hidden" value="{$Think.get.aid}" name="cid">
                                             <input type="hidden" value="{$Think.get.p}" name="p">
-                                            <input type="hidden" value="{$Think.get.aid}" name="id">
-                                        </div>
-                                    </div>
-                                    <div class="control-group">
-                                        <label class="control-label">排序</label>
-                                        <div class="controls">
-                                            <input type="text" name="sort" value="{$article.sort|default='100'}" placeholder="控制器排序"/>
-                                        </div>
-                                    </div>
-                                    <div class="control-group">
-                                        <label class="control-label">状态</label>
-                                        <div class="controls">
-                                            <label class="radio-inline inline-width">
-                                                <input type="radio" name="status"  value="0" <eq name="article.status" value="0">checked<else /> checked="checked"</eq> >启用
-                                            </label>
-                                            <label class="radio-inline inline-width">
-                                                <input type="radio" name="status"  value="1" <eq name="article.status" value="1">checked</eq>>禁用
-                                            </label>
+                                            <input type="hidden" value="{$Think.get.cid}" name="id">
                                         </div>
                                     </div>
                                     <div class="form-actions">
@@ -135,18 +136,46 @@
     <script type="text/javascript" src="__METRONIC_JS__/form-checked.js"></script>
     <script type="text/javascript">
         $(function(){
+        	
 		    KindEditor.ready(function(K) {
 				var editor = K.editor({
-					allowFileManager : true
+					allowFileManager : true,
+					uploadJson:"{:U('Uploadify/KindEditorUploadImage')}",
+		            width : "680px",
+		            height : "350px",
 				});
 				K('#J_selectImage').click(function() {
 					editor.loadPlugin('multiimage', function() {
 						editor.plugin.multiImageDialog({
 							clickFn : function(urlList) {
-								var div = K('#J_imageView');
-								div.html('');
+								var div = K('#JimageView');
+								var last = K('span.iamgeDiv').length;
+								//div.html('');
 								K.each(urlList, function(i, data) {
-									$html = '<span class="imageDiv"><img src="' + data.url + '" width="100" data-role="'+i+'"><img src="/Public/images/ldx.png" class="removeImage" onclick="removeImage(this)"> <input type="hidden" name="driver_image[]" value="'+data.url+'"></span>';
+									i = parseInt(last) + ++i;
+									$html = '<span style="width:220px;display:inline-block;position:relative;height:410px;overflow:hidden;margin-left:2px;" class="iamgeDiv" data-role="'+i+'">';
+									$html += '	<img src="' + data.url + '" data-role="'+i+'" style="margin:0 auto;width:125px;height:110px;">';
+									$html += '	<a href="javascript:void(0);" style="position:absolute;color:#777;right:15px;" onclick="removeImage(this)"><i class="icon-remove"></i></a>';
+									$html += '	<!--<a href="javascript:void(0);" style="position:absolute;color:#777;right:0px;" onclick="addDescription(this)"><i class="icon-plus"></i></a>-->';
+									$html += '	<input type="hidden" name="image['+i+'][image]" value="'+ data.url + '">';
+									$html += '	<div style="margin-top:10px;width:180px;">';
+									$html += '		<input type="text" name="image['+i+'][title]" placeholder="图片标题"/>';
+									$html += '	</div>';
+									$html += '	<div style="margin-top:10px;width:180px;">';
+									$html += '		<textarea name="image['+i+'][description]" rows="4" placeholder="图片说明" style="margin-top:10px;"></textarea>';
+									$html += '	</div>';
+									$html += '	<div style="margin-top:10px;width:180px;">';
+									$html += '		<input type="text" name="image['+i+'][sort]" value="100" placeholder="排序"/>';
+									$html += '	</div>';
+									$html += '	<div style="margin-top:10px;width:180px;">';
+									$html += '		<label class="radio-inline inline-width">';
+                                    $html += '            <input type="radio" name="image['+i+'][status]" value="0"  checked="checked">启用';
+                                    $html += '        </label>';
+                                    $html += '        <label class="radio-inline inline-width">';
+                                    $html += '            <input type="radio" name="image['+i+'][status]" value="1">禁用';
+                                    $html += '        </label>';
+									$html += '	</div>';
+									$html += '</span>';
 									div.append($html);
 								});
 								editor.hideDialog();
@@ -158,10 +187,11 @@
 	        $('form').submit(function(e){
                 e.preventDefault();
                 if($('form').valid()){
+                	console.log($('form').serialize());
                     var index = layer.load(2,{
 						shade: [0.4,'#fff'] //0.1透明度的白色背景
 					});
-	                $.post('__URL__/Insert',$('form').serialize(),function(data){
+	                $.post($('form').attr('action'),$('form').serialize(),function(data){
 	                    layer.close(index);
 						if(data.status==1){
 	                        layer.alert(data.msg,{icon:6,end:function(){
@@ -174,6 +204,26 @@
                 }
             });
         });
+        /**
+         * 删除上传图片
+         * @param {Object} obj
+         */
+        function removeImage(obj){
+			$obj=$(obj);
+			$parent = $obj.parent('span');
+			$src = $parent.children('img').eq(0).attr('src');
+			var index = layer.load(2,{
+				shard:['#000','0.4']
+			});
+			$.post("{:U('Uploadify/delmg1')}",{src:$src},function(data){
+				layer.close(index);
+				if(data.status==1){
+					$parent.remove();
+				}else{
+					art.dialog({time:1,content: data.msg});
+				}
+			});
+		}
     </script>
     <!-- END PAGE LEVEL STYLES -->
 <include file="Common:footer"/>
